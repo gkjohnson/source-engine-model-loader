@@ -1,0 +1,23 @@
+{
+  "name": "source-engine-model-loader",
+  "version": "1.0.0",
+  "description": "three.js loader for parsing source engine models",
+  "main": "index.js",
+  "scripts": {
+    "start": "static-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gkjohnson/source-engine-model-loader.git"
+  },
+  "author": "Garrett Johnson <garrett.kjohnson@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gkjohnson/source-engine-model-loader/issues"
+  },
+  "homepage": "https://github.com/gkjohnson/source-engine-model-loader#readme",
+  "dependencies": {
+    "static-server": "^2.2.1",
+    "three": "^0.109.0"
+  }
+}
