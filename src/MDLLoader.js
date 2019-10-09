@@ -641,8 +641,6 @@ THREE.MDLLoader.prototype = {
 				var bone = {};
 
 				bone.name = readString( dataView, dataView.getInt32( offset + 0, true ) );
-
-				console.log(bone.name)
 				bone.parent = dataView.getInt32( offset + 4, true );
 
 				var bonecontroller = new Array( 6 );
@@ -714,15 +712,224 @@ THREE.MDLLoader.prototype = {
 				// 184 + 32 = 216
 
 				bones.push( bone );
+
 			}
 
-
-
 			var boneControllers = [];
+			for (var i = 0; i < header.numbonecontrollers; i ++) {
+
+				const boneController = {};
+				const offset = header.bonecontrollerindex + i * 56;
+
+				boneController.bone = dataView.getInt32( offset, true );
+				boneController.type = dataView.getInt32( offset + 4, true ); // X Y Z XR YR ZR M
+				boneController.start = dataView.getFloat32( offset + 8, true );
+				boneController.end = dataView.getFloat32( offset + 12, true );
+				boneController.rest = dataView.getInt32( offset + 16, true );
+				boneController.inputfield = dataView.getInt32( offset + 20, true );
+
+				// int unused[8]
+
+				boneControllers.push( boneController );
+
+			}
+
+			const animDescriptions = [];
+			// struct mstudioanimdesc_t
+			for ( var i = 0; i < header.numlocalanim; i ++ ) {
+
+				const animDesc = {}
+				const offset = header.localanimindex + i * 100;
+
+				animDesc.baseptr = dataView.getInt32( offset, true );
+				animDesc.name = readString( dataView, dataView.getInt32( offset + 4, true ) );
+				animDesc.fps = dataView.getFloat32( offset + 8, true );
+				animDesc.flags = dataView.getInt32( offset + 12, true );
+				animDesc.numframes = dataView.getInt32( offset + 16, true );
+				
+				animDesc.nummovements = dataView.getInt32( offset + 20, true );
+				animDesc.movementindex = dataView.getInt32( offset + 24, true );
+
+				// struct mstudiomovement_t
+				animDesc.movements = [];
+				for ( var i2 = 0; i2 < animDesc.nummovements; i2 ++ ) {
+
+					const movement = {};
+					const offset2 = offset + animDesc.movementindex + i2 * 44;
+
+					movement.endframe = dataView.getInt32( offset2, true );
+					movement.motionflags = dataView.getInt32( offset2 + 4, true );
+					movement.v0 = dataView.getFloat32( offset2 + 8, true );
+					movement.v1 = dataView.getFloat32( offset2 + 12, true );
+					movement.angle = dataView.getFloat32( offset2 + 16, true );
+
+					movement.vector = {};
+					movement.vector.x = dataView.getFloat32( offset2 + 20, true );
+					movement.vector.y = dataView.getFloat32( offset2 + 24, true );
+					movement.vector.z = dataView.getFloat32( offset2 + 28, true );
+
+					movement.position.x = dataView.getFloat32( offset2 + 32, true );
+					movement.position.y = dataView.getFloat32( offset2 + 36, true );
+					movement.position.z = dataView.getFloat32( offset2 + 40, true );
+
+					animDesc.movements.push( movement );
+
+				}
+
+				// int unused[16]
+
+				// 6 * 4 + 28 = 52 bytes
+
+				animDesc.animblock = dataView.getInt32( offset + 52, true );
+				animDesc.animindex = dataView.getInt32( offset + 56, true );
+
+				// TODO: Load anim blocks
+
+				animDesc.numikrules = dataView.getInt32( offset + 60, true );
+				animDesc.ikruleindex = dataView.getInt32( offset + 64, true );
+				animDesc.animblockikruleindex = dataView.getInt32( offset + 68, true );
+
+				// TODO: Load IK Rules
+
+				animDesc.numlocalhierarchy = dataView.getInt32( offset + 72, true );
+				animDesc.numlocalhierarchyindex = dataView.getInt32( offset + 76, true );
+
+				// TODO: Load local hierarchies
+
+				animDesc.sectionindex = dataView.getInt32( offset + 80, true );
+				animDesc.sectionframes = dataView.getInt32( offset + 84, true );
+
+				// TODO: Load animation sections
+
+				animDesc.zeroframespan = dataView.getInt16( offset + 88, true );
+				animDesc.zeroframecount = dataView.getInt16( offset + 80, true );
+				animDesc.zeroframeindex = dataView.getInt32( offset + 92, true );
+
+				// TODO: Load zero frame data
+
+				animDesc.zeroframestalltime = dataView.getFloat32( offset + 96, true );
+
+				animDescriptions.push( animDesc );
+
+			}
+
+			// struct mstudioseqdesc_t 
+			const localSequences = [];
+			for ( let i = 0; i < header.numlocalseq; i ++ ) {
+
+				const localSeq = {};
+				const offset = header.localseqindex + i * 212;
+
+				localSeq.baseptr = dataView.getInt32( offset, true );
+				localSeq.label = readString( dataView, dataView.getInt32( offset + 4, true ) );
+				localSeq.activityName = readString( dataView, dataView.getInt32( offset + 8, true ) );
+
+				localSeq.flags = dataView.getInt32( offset + 12, true );
+				localSeq.activity = dataView.getInt32( offset + 16, true );
+				localSeq.actweight = dataView.getInt32( offset + 20, true );
+
+				localSeq.numevents = dataView.getInt32( offset + 24, true );
+				localSeq.eventindex = dataView.getInt32( offset + 28, true );
+
+				// TODO: Load mstudioevent_t
+
+				localSeq.bbmin = {};
+				localSeq.bbmin.x = dataView.getFloat32( offset + 32, true );
+				localSeq.bbmin.y = dataView.getFloat32( offset + 36, true );
+				localSeq.bbmin.z = dataView.getFloat32( offset + 40, true );
+
+				localSeq.bbmax = {};
+				localSeq.bbmax.x = dataView.getFloat32( offset + 44, true );
+				localSeq.bbmax.y = dataView.getFloat32( offset + 48, true );
+				localSeq.bbmax.z = dataView.getFloat32( offset + 52, true );
+
+				localSeq.numblends = dataView.getInt32( offset + 56, true );
+				localSeq.animindexindex = dataView.getInt32( offset + 60, true );
+
+				// TODO: Load inline anim(x, y) structs
+
+				localSeq.movementindex = dataView.getInt32( offset + 64, true );
+				localSeq.groupsize = new Array( 2 );
+				localSeq.groupsize[ 0 ] = dataView.getInt32( offset + 68, true );
+				localSeq.groupsize[ 1 ] = dataView.getInt32( offset + 72, true );
+
+				localSeq.paramindex = new Array( 2 ); // X, Y, Z, XR, YR, ZR
+				localSeq.paramindex[ 0 ] = dataView.getInt32( offset + 76, true );
+				localSeq.paramindex[ 1 ] = dataView.getInt32( offset + 80, true );
+
+				localSeq.paramstart = new Array( 2 );
+				localSeq.paramstart[ 0 ] = dataView.getFloat32( offset + 84, true );
+				localSeq.paramstart[ 1 ] = dataView.getFloat32( offset + 88, true );
+
+				localSeq.paramend = new Array( 2 );
+				localSeq.paramend[ 0 ] = dataView.getFloat32( offset + 92, true );
+				localSeq.paramend[ 1 ] = dataView.getFloat32( offset + 96, true );
+
+				localSeq.paramparent = dataView.getInt32( offset + 100, true );
+
+				localSeq.fadeintime = dataView.getFloat32( offset + 104, true );
+				localSeq.fadeouttime = dataView.getFloat32( offset + 108, true );
+
+				localSeq.localentrynode = dataView.getInt32( offset + 112, true );
+				localSeq.localexitynode = dataView.getInt32( offset + 116, true );
+				localSeq.nodeflags = dataView.getInt32( offset + 120, true );
+				
+				localSeq.entryphase = dataView.getFloat32( offset + 124, true );
+				localSeq.exitphase = dataView.getFloat32( offset + 128, true );
+
+				localSeq.lastframe = dataView.getFloat32( offset + 132, true );
+				
+				localSeq.nextseq = dataView.getInt32( offset + 136, true );
+				localSeq.pose = dataView.getInt32( offset + 140, true );
+
+				localSeq.numikrules = dataView.getInt32( offset + 144, true );
+
+				localSeq.numautolayers = dataView.getInt32( offset + 148, true );
+				localSeq.autolayerindex = dataView.getInt32( offset + 152, true );
+
+				// TODO: Load autolayers
+
+				localSeq.weightlistindex = dataView.getInt32( offset + 156, true );
+				
+				// TODO: Load weights
+
+				localSeq.posekeyindex = dataView.getInt32( offset + 160, true );
+
+				// TODO: load pose keys
+
+				localSeq.numiklocks = dataView.getInt32( offset + 164, true );
+				localSeq.iklockindex = dataView.getInt32( offset + 168, true );
+
+				// TODO: Load ik locks
+
+				localSeq.keyvalueindex = dataView.getInt32( offset + 172, true );
+				localSeq.keyvaluesize = dataView.getInt32( offset + 176, true );
+
+				// TODO: Load key values
+
+				localSeq.cycleposeindex = dataView.getInt32( offset + 180, true );
+
+				// int unused[7]
+
+				// 7 * 4 + 184 = 212 bytes
+
+				localSequences.push( localSeq );
+
+			}
 
 			var surfaceProp = readString( dataView, header.surfacepropindex );
 
-			return { textures, textureDirectories, includeModels, surfaceProp, bodyParts, bones, boneControllers };
+			return {
+				textures,
+				textureDirectories,
+				includeModels,
+				surfaceProp,
+				bodyParts,
+				bones,
+				boneControllers,
+				animDescriptions,
+				localSequences,
+			};
 
 		}
 

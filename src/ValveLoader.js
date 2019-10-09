@@ -135,7 +135,11 @@ THREE.ValveLoader.prototype = {
 				bones.forEach( ( b, i ) => {
 
 					const parent = mdl.bones[ i ].parent;
-					if ( parent !== -1 ) {
+					if ( parent === -1 ) {
+						
+						group.add( b );
+
+					} else {
 
 						bones[ parent ].add( b );
 
@@ -143,17 +147,17 @@ THREE.ValveLoader.prototype = {
 
 				} );
 
-				if ( bones.filter( b => b.parent === null ) ) {
-
-					console.warn( 'ValveLoader: There are multiple skeleton roots.' );
-
-				}
-
 				const skeleton = new THREE.Skeleton( bones );
-				group.add( bones[ 0 ] );
-
 				const sm = new THREE.SkinnedMesh();
-				sm.add( bones[ 0 ] );
+				bones.forEach( ( b, i ) => {
+					
+					if ( mdl.bones[ i ].parent === -1 ) {
+					
+						sm.add( b );
+					
+					}
+
+				});
 				sm.bind( skeleton );
 				group.add( sm );
 				sm.material.skinning = true;
@@ -188,6 +192,7 @@ THREE.ValveLoader.prototype = {
 
 								var mdlMesh = mdlModel.meshes[ i4 ];
 								var material = materials[ mdlMesh.material ];
+
 								vtxMesh.stripGroups.forEach( vtxStripGroup => {
 
 									var obj = new THREE.Object3D();
