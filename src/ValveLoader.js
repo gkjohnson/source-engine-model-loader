@@ -190,8 +190,10 @@ THREE.ValveLoader.prototype = {
 
 							vtxLod.meshes.forEach( ( vtxMesh, i4 ) => {
 
+								// TODO: Enable the ability to pick which skin family we use
 								var mdlMesh = mdlModel.meshes[ i4 ];
-								var material = materials[ mdlMesh.material ];
+								var skinsTable = mdl.skinsTable;
+								var material = materials[ skinsTable[ 0 ][ mdlMesh.material ] ];
 
 								vtxMesh.stripGroups.forEach( vtxStripGroup => {
 

@@ -917,6 +917,20 @@ THREE.MDLLoader.prototype = {
 
 			}
 
+			var skinsTable = [];
+			for ( let i = 0; i < header.numskinfamilies; i ++ ) {
+
+				const offset = header.skinindex + i * header.numskinref * 2;
+				const ref = [];
+				for ( let j = 0; j < header.numskinref; j ++ ) {
+
+					ref.push( dataView.getUint16( offset + j * 2, true ) );
+
+				}
+				skinsTable.push( ref );
+
+			}
+
 			var surfaceProp = readString( dataView, header.surfacepropindex );
 
 			return {
@@ -929,6 +943,7 @@ THREE.MDLLoader.prototype = {
 				boneControllers,
 				animDescriptions,
 				localSequences,
+				skinsTable,
 			};
 
 		}
