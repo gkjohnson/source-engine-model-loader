@@ -194,10 +194,11 @@ THREE.ValveLoader.prototype = {
 								var mdlMesh = mdlModel.meshes[ i4 ];
 								var skinsTable = mdl.skinsTable;
 								var material = materials[ skinsTable[ 0 ][ mdlMesh.material ] ];
-
+								material.skinning = true;
+								
 								vtxMesh.stripGroups.forEach( vtxStripGroup => {
 
-									var obj = new THREE.Object3D();
+									var obj = new THREE.Group();
 
 									vtxStripGroup.strips.forEach( vtxStrip => {
 
@@ -210,22 +211,33 @@ THREE.ValveLoader.prototype = {
 										geometry.addAttribute( 'position', vvd.attributes.position );
 										geometry.addAttribute( 'uv', vvd.attributes.uv );
 										geometry.addAttribute( 'normal', vvd.attributes.normal );
+										geometry.addAttribute( 'skinWeight', vvd.attributes.skinWeight );
+										geometry.addAttribute( 'skinIndex', vvd.attributes.skinIndex );
 
 										// TODO : Winding order seems incorrect causing normals to face the wrong direction
 										// the and faces to be inverted
 
 										geometry.addGroup( vtxStrip.numIndices, vtxStrip.indexOffset, 0 );
 
-										// var mesh = new THREE.Points( geometry, new THREE.PointsMaterial( { size: .1 } ) );
-										var mesh = new THREE.Mesh( geometry, material );
+										var mesh = new THREE.SkinnedMesh( geometry, material );
+										var skeleton = new THREE.Skeleton( bones );
+										mesh.bind( skeleton );
+
 										if ( vtxStrip.flags & 2 ) mesh.drawMode = THREE.TriangleStripDrawMode;
 
-										// console.log(mesh)
 										obj.add( mesh );
 
 									} );
 
-									group.add( obj );
+									if (obj.children.length === 1) {
+
+										group.add( obj.children[ 0 ] );
+									
+									} else {
+
+										group.add( obj );
+
+									}
 
 								} );
 

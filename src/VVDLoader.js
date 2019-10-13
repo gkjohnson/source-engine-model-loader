@@ -122,10 +122,32 @@ THREE.VVDLoader.prototype = {
 			var interleavedUint8Array = new Uint8Array( buffer, header.vertexDataStart, len );
 			var interleavedUint8Buffer = new THREE.InterleavedBuffer( interleavedUint8Array, 48 );
 
+			// VVD file describes three bone weights and indices while three.js requires four
+			const totalVerts = len / 48;
+			const skinWeightArray = new Float32Array( totalVerts * 4 );
+			const skinIndexArray = new Uint8Array( totalVerts * 4 );
+
+			for ( let i = 0; i < totalVerts; i ++ ) {
+
+				const i4 = i * 4;
+				const floatIndex = i * 12;
+				skinWeightArray[ i4 + 0 ] = interleavedFloat32Array[ floatIndex + 0 ];
+				skinWeightArray[ i4 + 1 ] = interleavedFloat32Array[ floatIndex + 1 ];
+				skinWeightArray[ i4 + 2 ] = interleavedFloat32Array[ floatIndex + 2 ];
+				skinWeightArray[ i4 + 3 ] = 0;
+
+				const uint8Index = i * 12 * 4 + 12;				
+				skinIndexArray[ i4 + 0 ] = interleavedUint8Array[ uint8Index + 0 ];
+				skinIndexArray[ i4 + 1 ] = interleavedUint8Array[ uint8Index + 1 ];
+				skinIndexArray[ i4 + 2 ] = interleavedUint8Array[ uint8Index + 2 ];
+				skinIndexArray[ i4 + 3 ] = 0;
+
+			}
+
 			return {
 
-				skinWeight: new THREE.InterleavedBufferAttribute( interleavedFloat32Buffer, 3, 0, false ),
-				skinIndex: new THREE.InterleavedBufferAttribute( interleavedUint8Buffer, 3, 12, false ),
+				skinWeight: new THREE.BufferAttribute( skinWeightArray, 4, false ),
+				skinIndex: new THREE.BufferAttribute( skinIndexArray, 4, false ),
 				numBones: new THREE.InterleavedBufferAttribute( interleavedUint8Buffer, 1, 15, false ),
 
 				position: new THREE.InterleavedBufferAttribute( interleavedFloat32Buffer, 3, 4, false ),
