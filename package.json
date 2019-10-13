@@ -19,5 +19,8 @@
   "dependencies": {
     "static-server": "^2.2.1",
     "three": "^0.109.0"
+  },
+  "devDependencies": {
+    "eslint-config-mdcs": "^4.2.3"
   }
 }
