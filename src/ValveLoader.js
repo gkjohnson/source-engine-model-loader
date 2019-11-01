@@ -170,8 +170,12 @@ ValveLoader.prototype = {
 				group.add( sm );
 				sm.material.skinning = true;
 
-				// window.sh = new THREE.SkeletonHelper( sm )
+				// TODO: Why do we need to add the skeleton helper to the scene? Why do
+				// we need a fake skinnedmesh to show the skeleton? Why can't the bones be
+				// added to a group?
+				const sh = new THREE.SkeletonHelper( sm )
 				// scene.add(sh)
+				group.add( sh );
 
 				vtx.bodyParts.forEach( ( vtxBodyPart, i ) => {
 
