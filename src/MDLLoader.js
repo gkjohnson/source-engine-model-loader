@@ -1,15 +1,17 @@
+import * as THREE from 'three';
+
 // MDL: https://developer.valvesoftware.com/wiki/MDL
 // https://github.com/ValveSoftware/source-sdk-2013/blob/master/sp/src/public/studio.h
 
-THREE.MDLLoader = function ( manager ) {
+const MDLLoader = function ( manager ) {
 
 	this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
 
 };
 
-THREE.MDLLoader.prototype = {
+MDLLoader.prototype = {
 
-	constructor: THREE.MDLLoader,
+	constructor: MDLLoader,
 
 	load: function ( url, onLoad, onProgress, onError ) {
 
@@ -746,7 +748,7 @@ THREE.MDLLoader.prototype = {
 				animDesc.fps = dataView.getFloat32( offset + 8, true );
 				animDesc.flags = dataView.getInt32( offset + 12, true );
 				animDesc.numframes = dataView.getInt32( offset + 16, true );
-				
+
 				animDesc.nummovements = dataView.getInt32( offset + 20, true );
 				animDesc.movementindex = dataView.getInt32( offset + 24, true );
 
@@ -813,7 +815,7 @@ THREE.MDLLoader.prototype = {
 
 			}
 
-			// struct mstudioseqdesc_t 
+			// struct mstudioseqdesc_t
 			const localSequences = [];
 			for ( let i = 0; i < header.numlocalseq; i ++ ) {
 
@@ -873,12 +875,12 @@ THREE.MDLLoader.prototype = {
 				localSeq.localentrynode = dataView.getInt32( offset + 112, true );
 				localSeq.localexitynode = dataView.getInt32( offset + 116, true );
 				localSeq.nodeflags = dataView.getInt32( offset + 120, true );
-				
+
 				localSeq.entryphase = dataView.getFloat32( offset + 124, true );
 				localSeq.exitphase = dataView.getFloat32( offset + 128, true );
 
 				localSeq.lastframe = dataView.getFloat32( offset + 132, true );
-				
+
 				localSeq.nextseq = dataView.getInt32( offset + 136, true );
 				localSeq.pose = dataView.getInt32( offset + 140, true );
 
@@ -890,7 +892,7 @@ THREE.MDLLoader.prototype = {
 				// TODO: Load autolayers
 
 				localSeq.weightlistindex = dataView.getInt32( offset + 156, true );
-				
+
 				// TODO: Load weights
 
 				localSeq.posekeyindex = dataView.getInt32( offset + 160, true );
@@ -955,3 +957,5 @@ THREE.MDLLoader.prototype = {
 	}
 
 };
+
+export { MDLLoader };

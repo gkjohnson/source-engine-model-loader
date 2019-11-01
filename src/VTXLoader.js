@@ -1,14 +1,16 @@
+import * as THREE from 'three';
+
 // VTX: https://developer.valvesoftware.com/wiki/VTX
 
-THREE.VTXLoader = function ( manager ) {
+const VTXLoader = function ( manager ) {
 
 	this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
 
 };
 
-THREE.VTXLoader.prototype = {
+VTXLoader.prototype = {
 
-	constructor: THREE.VTXLoader,
+	constructor: VTXLoader,
 
 	load: function ( url, onLoad, onProgress, onError ) {
 
@@ -300,3 +302,5 @@ THREE.VTXLoader.prototype = {
 	}
 
 };
+
+export { VTXLoader };

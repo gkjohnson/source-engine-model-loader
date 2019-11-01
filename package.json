@@ -4,7 +4,8 @@
   "description": "three.js loader for parsing source engine models",
   "main": "index.js",
   "scripts": {
-    "start": "static-server"
+    "start": "static-server",
+    "parcel": "parcel watch ./example/index.html --public-url ./"
   },
   "repository": {
     "type": "git",
@@ -21,6 +22,7 @@
     "three": "^0.109.0"
   },
   "devDependencies": {
-    "eslint-config-mdcs": "^4.2.3"
+    "eslint-config-mdcs": "^4.2.3",
+    "parcel-bundler": "^1.12.4"
   }
 }

@@ -1,14 +1,17 @@
+import * as THREE from 'three';
+import { VTFLoader } from './VTFLoader.js';
+
 // VMT: https://developer.valvesoftware.com/wiki/VMT
 
-THREE.VMTLoader = function ( manager ) {
+const VMTLoader = function ( manager ) {
 
 	this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
 
 };
 
-THREE.VMTLoader.prototype = {
+VMTLoader.prototype = {
 
-	constructor: THREE.VMTLoader,
+	constructor: VMTLoader,
 
 	load: function ( url, onLoad, onProgress, onError ) {
 
@@ -105,7 +108,7 @@ THREE.VMTLoader.prototype = {
 
 		const path = `${ urlTokens.join( 'materials' ) }materials/`;
 		const material = new THREE.MeshPhongMaterial();
-		const vtfLoader = new THREE.VTFLoader( this.manager );
+		const vtfLoader = new VTFLoader( this.manager );
 		for ( const key in root ) {
 
 			// TODO: Use more keys
@@ -139,3 +142,5 @@ THREE.VMTLoader.prototype = {
 	}
 
 };
+
+export { VMTLoader };

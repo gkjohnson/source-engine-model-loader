@@ -1,14 +1,16 @@
+import * as THREE from 'three';
+
 // VVD: https://developer.valvesoftware.com/wiki/VVD
 
-THREE.VVDLoader = function ( manager ) {
+const VVDLoader = function ( manager ) {
 
 	this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
 
 };
 
-THREE.VVDLoader.prototype = {
+VVDLoader.prototype = {
 
-	constructor: THREE.VVDLoader,
+	constructor: VVDLoader,
 
 	load: function ( url, onLoad, onProgress, onError ) {
 
@@ -136,7 +138,7 @@ THREE.VVDLoader.prototype = {
 				skinWeightArray[ i4 + 2 ] = interleavedFloat32Array[ floatIndex + 2 ];
 				skinWeightArray[ i4 + 3 ] = 0;
 
-				const uint8Index = i * 12 * 4 + 12;				
+				const uint8Index = i * 12 * 4 + 12;
 				skinIndexArray[ i4 + 0 ] = interleavedUint8Array[ uint8Index + 0 ];
 				skinIndexArray[ i4 + 1 ] = interleavedUint8Array[ uint8Index + 1 ];
 				skinIndexArray[ i4 + 2 ] = interleavedUint8Array[ uint8Index + 2 ];
@@ -167,3 +169,5 @@ THREE.VVDLoader.prototype = {
 	}
 
 };
+
+export { VVDLoader };

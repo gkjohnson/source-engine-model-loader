@@ -1,12 +1,18 @@
-THREE.ValveLoader = function ( manager ) {
+import * as THREE from 'three';
+import { MDLLoader } from './MDLLoader.js';
+import { VMTLoader } from './VMTLoader.js';
+import { VTXLoader } from './VTXLoader.js';
+import { VVDLoader } from './VVDLoader.js';
+
+const ValveLoader = function ( manager ) {
 
 	this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
 
 };
 
-THREE.ValveLoader.prototype = {
+ValveLoader.prototype = {
 
-	constructor: THREE.ValveLoader,
+	constructor: ValveLoader,
 
 	load: function ( url, onLoad, onProgress, onError ) {
 
@@ -50,19 +56,19 @@ THREE.ValveLoader.prototype = {
 
 		const mdlpr = new Promise( ( resolve, reject ) => {
 
-			new THREE.MDLLoader( this.manager ).load( `${ url }.mdl`, resolve, undefined, reject );
+			new MDLLoader( this.manager ).load( `${ url }.mdl`, resolve, undefined, reject );
 
 		} );
 
 		const vvdpr = new Promise( ( resolve, reject ) => {
 
-			new THREE.VVDLoader( this.manager ).load( `${ url }.vvd`, resolve, undefined, reject );
+			new VVDLoader( this.manager ).load( `${ url }.vvd`, resolve, undefined, reject );
 
 		} );
 
 		const vtxpr = new Promise( ( resolve, reject ) => {
 
-			new THREE.VTXLoader( this.manager ).load( `${ url }.dx90.vtx`, resolve, undefined, reject );
+			new VTXLoader( this.manager ).load( `${ url }.dx90.vtx`, resolve, undefined, reject );
 
 		} );
 
@@ -71,7 +77,7 @@ THREE.ValveLoader.prototype = {
 			.then( ( [ mdl, vvd, vtx ] ) => {
 
 				const promises = [];
-				const vmtLoader = new THREE.VMTLoader( this.manager );
+				const vmtLoader = new VMTLoader( this.manager );
 				const tokens = url.split( 'models' );
 				tokens.pop();
 
@@ -122,6 +128,8 @@ THREE.ValveLoader.prototype = {
 
 				}
 
+				console.log(mdl.bones)
+
 				const group = new THREE.Group();
 				const bones = mdl.bones.map( b => {
 
@@ -136,7 +144,7 @@ THREE.ValveLoader.prototype = {
 
 					const parent = mdl.bones[ i ].parent;
 					if ( parent === -1 ) {
-						
+
 						group.add( b );
 
 					} else {
@@ -150,11 +158,11 @@ THREE.ValveLoader.prototype = {
 				const skeleton = new THREE.Skeleton( bones );
 				const sm = new THREE.SkinnedMesh();
 				bones.forEach( ( b, i ) => {
-					
+
 					if ( mdl.bones[ i ].parent === -1 ) {
-					
+
 						sm.add( b );
-					
+
 					}
 
 				});
@@ -162,8 +170,8 @@ THREE.ValveLoader.prototype = {
 				group.add( sm );
 				sm.material.skinning = true;
 
-				window.sh = new THREE.SkeletonHelper( sm )
-				scene.add(sh)
+				// window.sh = new THREE.SkeletonHelper( sm )
+				// scene.add(sh)
 
 				vtx.bodyParts.forEach( ( vtxBodyPart, i ) => {
 
@@ -195,7 +203,7 @@ THREE.ValveLoader.prototype = {
 								var skinsTable = mdl.skinsTable;
 								var material = materials[ skinsTable[ 0 ][ mdlMesh.material ] ];
 								material.skinning = true;
-								
+
 								vtxMesh.stripGroups.forEach( vtxStripGroup => {
 
 									var obj = new THREE.Group();
@@ -232,7 +240,7 @@ THREE.ValveLoader.prototype = {
 									if (obj.children.length === 1) {
 
 										group.add( obj.children[ 0 ] );
-									
+
 									} else {
 
 										group.add( obj );
@@ -256,3 +264,5 @@ THREE.ValveLoader.prototype = {
 	}
 
 };
+
+export { ValveLoader };

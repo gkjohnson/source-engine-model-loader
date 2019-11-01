@@ -1,19 +1,21 @@
+import * as THREE from 'three';
+
 // VTF: https://developer.valvesoftware.com/wiki/Valve_Texture_Format
 
 // TODO: The mipmap filter type needs to be updated to LinearFilter for some reason
 // TODO: get cube maps, animations, volume textures
-THREE.VTFLoader = function ( manager ) {
+const VTFLoader = function ( manager ) {
 
 	THREE.CompressedTextureLoader.call( this, manager );
 
-	this._parser = THREE.VTFLoader.parse;
+	this._parser = VTFLoader.parse;
 
 };
 
-THREE.VTFLoader.prototype = Object.create( THREE.CompressedTextureLoader.prototype );
-THREE.VTFLoader.prototype.constructor = THREE.VTFLoader;
+VTFLoader.prototype = Object.create( THREE.CompressedTextureLoader.prototype );
+VTFLoader.prototype.constructor = VTFLoader;
 
-THREE.VTFLoader.parse = function ( buffer, loadMipmaps ) {
+VTFLoader.prototype.parse = function ( buffer, loadMipmaps ) {
 
 	function bgrToRgb( buffer, stride ) {
 
@@ -148,7 +150,7 @@ THREE.VTFLoader.parse = function ( buffer, loadMipmaps ) {
 					byteArray[ i + 1 ] = g;
 					byteArray[ i + 2 ] = b;
 					byteArray[ i + 3 ] = a;
-		
+
 				}
 				threeFormat = THREE.RGBAFormat;
 				break;
@@ -230,6 +232,10 @@ THREE.VTFLoader.parse = function ( buffer, loadMipmaps ) {
 
 		mipmaps = mipmaps.reverse();
 
+		// mipmaps = mipmaps.filter( m => m.width > 500 );
+
+		// mipmaps = [ mipmaps[ 0 ] ];
+
 		return {
 
 			mipmaps: mipmaps,
@@ -247,7 +253,7 @@ THREE.VTFLoader.parse = function ( buffer, loadMipmaps ) {
 
 };
 
-THREE.VTFLoader.prototype.load = function ( ...args ) {
+VTFLoader.prototype.load = function ( ...args ) {
 
 	const tex = THREE.CompressedTextureLoader.prototype.load.call( this, ...args );
 	tex.minFilter = THREE.LinearFilter;
@@ -255,3 +261,5 @@ THREE.VTFLoader.prototype.load = function ( ...args ) {
 	return tex;
 
 };
+
+export { VTFLoader };
