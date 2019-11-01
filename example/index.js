@@ -1,7 +1,7 @@
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { ValveLoader } from '../src/ValveLoader.js';
+import { SourceModelLoader } from '../src/SourceModelLoader.js';
 
 // globals
 var stats;
@@ -66,7 +66,7 @@ function init() {
 	// plane.material.map = new VTFLoader().load( '../models/Overwatch/Overwatch/materials/models/tfa/overwatch/torbjorn/body_d.vtf' );
 	// scene.add( plane );
 
-	new ValveLoader()
+	new SourceModelLoader()
 		.load(
 			'../models/shrek/models/shrekgame/shrek',
 			// '../models/VTOL/models/kss/mirrorsedgecatalyst/vtol/kss_vtol',

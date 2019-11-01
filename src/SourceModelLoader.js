@@ -4,15 +4,15 @@ import { VMTLoader } from './VMTLoader.js';
 import { VTXLoader } from './VTXLoader.js';
 import { VVDLoader } from './VVDLoader.js';
 
-const ValveLoader = function ( manager ) {
+const SourceModelLoader = function ( manager ) {
 
 	this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
 
 };
 
-ValveLoader.prototype = {
+SourceModelLoader.prototype = {
 
-	constructor: ValveLoader,
+	constructor: SourceModelLoader,
 
 	load: function ( url, onLoad, onProgress, onError ) {
 
@@ -117,14 +117,14 @@ ValveLoader.prototype = {
 
 				if ( mdl.header.checksum !== vvd.header.checksum || mdl.header.checksum !== vtx.header.checksum ) {
 
-					console.warn( 'ValveLoader: File checksums do not match.' );
+					console.warn( 'SourceModelLoader: File checksums do not match.' );
 
 				}
 
 				// https://github.com/ValveSoftware/source-sdk-2013/blob/master/sp/src/utils/vrad/vradstaticprops.cpp#L1504-L1688
 				if ( mdl.numbodyparts !== vtx.numBodyParts ) {
 
-					console.warn( 'ValveLoader: Number of body parts does not match.' );
+					console.warn( 'SourceModelLoader: Number of body parts does not match.' );
 
 				}
 
@@ -182,7 +182,7 @@ ValveLoader.prototype = {
 					var mdlBodyPart = mdl.bodyParts[ i ];
 					if ( mdlBodyPart.nummodels !== vtxBodyPart.numModels ) {
 
-						console.warn( 'ValveLoader: Number of models does not match.' );
+						console.warn( 'SourceModelLoader: Number of models does not match.' );
 
 					}
 
@@ -195,7 +195,7 @@ ValveLoader.prototype = {
 
 							if ( mdlModel.nummeshes !== vtxLod.numMeshes ) {
 
-								console.warn( 'ValveLoader: Number of meshes does not match.', mdlModel.nummeshes, vtxLod.numMeshes );
+								console.warn( 'SourceModelLoader: Number of meshes does not match.', mdlModel.nummeshes, vtxLod.numMeshes );
 								return;
 
 							}
@@ -269,4 +269,4 @@ ValveLoader.prototype = {
 
 };
 
-export { ValveLoader };
+export { SourceModelLoader };
