@@ -134,6 +134,24 @@ THREE.VTFLoader.parse = function ( buffer, loadMipmaps ) {
 
 		switch ( format ) {
 
+			case 1: // ABGR8888
+				var dataLength = width * height * 3;
+				byteArray = new Uint8Array( buffer, offset, dataLength );
+
+				for ( var i = 0, l = byteArray.length; i < l; i += 4 ) {
+
+					var a = byteArray[ i ];
+					var b = byteArray[ i + 1 ];
+					var g = byteArray[ i + 2 ];
+					var r = byteArray[ i + 3 ];
+					byteArray[ i ] = r;
+					byteArray[ i + 1 ] = g;
+					byteArray[ i + 2 ] = b;
+					byteArray[ i + 3 ] = a;
+		
+				}
+				threeFormat = THREE.RGBAFormat;
+				break;
 			case 3: // BGR888
 				var dataLength = width * height * 3;
 				byteArray = new Uint8Array( buffer, offset, dataLength );
