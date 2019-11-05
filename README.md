@@ -14,3 +14,10 @@ new SourceModelLoader()
 
   } );
 ```
+
+# Unimplemented Features
+- Mouths
+- Flex controllers / Morph targets
+- Levels of detail
+- Inverse kinematic chains
+- Animation sequences
