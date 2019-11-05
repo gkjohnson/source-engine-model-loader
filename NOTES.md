@@ -2,7 +2,7 @@
 
 A small effort to try to decode and load valve 3d file formats.
 
-Get models from [SFMLab](SFMLab.com).
+Get models from [SFMLab](https://SFMLab.com).
 
 ## Formats
 
