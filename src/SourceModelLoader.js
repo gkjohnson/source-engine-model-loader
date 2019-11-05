@@ -128,6 +128,7 @@ SourceModelLoader.prototype = {
 
 				}
 
+				materials.map( m => m.skinning = true );
 				const group = new THREE.Group();
 				const bones = mdl.bones.map( b => {
 
@@ -187,7 +188,6 @@ SourceModelLoader.prototype = {
 								var mdlMesh = mdlModel.meshes[ i4 ];
 								var skinsTable = mdl.skinsTable;
 								var material = materials[ skinsTable[ 0 ][ mdlMesh.material ] ];
-								material.skinning = true;
 
 								vtxMesh.stripGroups.forEach( vtxStripGroup => {
 
@@ -218,6 +218,7 @@ SourceModelLoader.prototype = {
 										if ( vtxStrip.flags & 2 ) mesh.drawMode = THREE.TriangleStripDrawMode;
 
 										obj.add( mesh );
+										mesh.userData.materialIndex = mdlMesh.material;
 
 									} );
 
@@ -241,6 +242,8 @@ SourceModelLoader.prototype = {
 
 				} );
 
+				group.userData.skinsTable = mdl.skinsTable;
+				group.userData.materials = materials;
 				onLoad( group );
 
 			} );

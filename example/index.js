@@ -7,30 +7,17 @@ import { SkeletonHelper } from 'three';
 // globals
 var stats;
 var params = {
-	useShadowVolumes: true,
 
-	light: {
-		speed: 1.0,
-		distance: 15.0,
-		pointLight: true,
-	},
+	showSkeleton: true,
+	skin: 0
 
-	shadows: {
-		showVolume: false,
-		distance: 400,
-		bias: 0.01,
-	},
-
-	object: {
-		display: 0,
-		speed: 1.0,
-	}
 };
 var camera, scene, renderer, controls;
 var directionalLight, ambientLight;
-var plane;
+var skeletonHelper, model, gui;
 
 init();
+rebuildGui();
 animate();
 
 function init() {
@@ -69,9 +56,9 @@ function init() {
 
 	new SourceModelLoader()
 		.load(
-			'../models/shrek/models/shrekgame/shrek',
+			// '../models/shrek/models/shrekgame/shrek',
 			// '../models/VTOL/models/kss/mirrorsedgecatalyst/vtol/kss_vtol',
-			// '../models/NierPOD/models/cold/male/NIERPOD/NIERPOD',
+			'../models/NierPOD/models/cold/male/NIERPOD/NIERPOD',
 			// '../models/neopolitan/models/rwby/Neopolitan/neopolitan',
 			// '../models/boxing-gloves/models/grey/props/held/boxing_glove_l',
 			// '../models/advanced_suits_ds2/models/deadspacesuits/isaacadvancedsuit',
@@ -93,7 +80,7 @@ function init() {
 
 			group => {
 
-				const skeletonHelper = new SkeletonHelper( group );
+				skeletonHelper = new SkeletonHelper( group );
 				scene.add( skeletonHelper );
 				scene.add( group );
 				group.rotation.x = -Math.PI / 2;
@@ -102,6 +89,7 @@ function init() {
 					c.receiveShadow = true;
 				});
 
+				console.log( group );
 				const bb = new THREE.Box3();
 				bb.setFromObject( group );
 				bb.getCenter( controls.target );
@@ -133,6 +121,9 @@ function init() {
 				cam.right = cam.top = dim / 2;
 				cam.updateProjectionMatrix();
 
+				model = group;
+				rebuildGui();
+
 			} );
 
 	// new THREE.MDLLoader().load( '../models/Link_-_Hyrule_Warriors_IpV1rRa/models/hyrulewarriors/link_classic.mdl', d => console.log( d ) );
@@ -152,28 +143,37 @@ function init() {
 
 	window.addEventListener( 'resize', onWindowResize, false );
 
+}
+
+function rebuildGui() {
+
+	if ( gui ) {
+
+		gui.destroy();
+
+	}
+
+	params.skin = 0;
+
 	// dat gui
-	var gui = new dat.GUI();
+	gui = new dat.GUI();
 	gui.width = 300;
 
-	// gui.add(params, 'useShadowVolumes');
+	gui.add( params, 'showSkeleton' );
 
-	// var lightFolder = gui.addFolder( 'light' );
-	// lightFolder.add(params.light, 'pointLight');
-	// lightFolder.add(params.light, 'speed', 0, 2);
-	// lightFolder.add(params.light, 'distance', 0, 30);
-	// lightFolder.open();
+	if ( model ) {
 
-	// var shadowFolder = gui.addFolder( 'shadow' );
-	// shadowFolder.add(params.shadows, 'showVolume');
-	// shadowFolder.add(params.shadows, 'distance', 0, 600);
-	// shadowFolder.add(params.shadows, 'bias',-0.05, 0.05);
-	// shadowFolder.open();
+		const options = {};
+		model.userData.skinsTable.forEach( ( arr, i ) => {
 
-	// var objectFolder = gui.addFolder( 'object' );
-	// objectFolder.add(params.object, 'speed', 0, 2.0);
-	// objectFolder.add(params.object, 'display', { 'Torus': 0, 'Dancer': 1 });
-	// objectFolder.open();
+			options[ `skin ${ i }` ] = i;
+
+		});
+
+		gui.add( params, 'skin' ).options( options );
+
+	}
+
 	gui.open();
 
 }
@@ -200,6 +200,28 @@ function animate() {
 }
 
 function render() {
+
+	if ( skeletonHelper ) {
+
+		skeletonHelper.visible = params.showSkeleton;
+
+	}
+
+	if ( model ) {
+
+		const skinsTable = model.userData.skinsTable;
+		const materials = model.userData.materials;
+		model.traverse( c => {
+
+			if ( c.material ) {
+
+				c.material = materials[ skinsTable[ params.skin ][ c.userData.materialIndex ] ];
+
+			}
+
+		} );
+
+	}
 
 	controls.update();
 	renderer.render( scene, camera );
