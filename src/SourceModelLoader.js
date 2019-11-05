@@ -128,8 +128,6 @@ SourceModelLoader.prototype = {
 
 				}
 
-				console.log(mdl.bones)
-
 				const group = new THREE.Group();
 				const bones = mdl.bones.map( b => {
 
@@ -155,27 +153,10 @@ SourceModelLoader.prototype = {
 
 				} );
 
+				// create the shared skeleton and update all the bone matrices that have been added
+				// into the group to ensure the inverses generated for the skeleton on bind are correct
 				const skeleton = new THREE.Skeleton( bones );
-				const sm = new THREE.SkinnedMesh();
-				bones.forEach( ( b, i ) => {
-
-					if ( mdl.bones[ i ].parent === -1 ) {
-
-						sm.add( b );
-
-					}
-
-				});
-				sm.bind( skeleton );
-				group.add( sm );
-				sm.material.skinning = true;
-
-				// TODO: Why do we need to add the skeleton helper to the scene? Why do
-				// we need a fake skinnedmesh to show the skeleton? Why can't the bones be
-				// added to a group?
-				const sh = new THREE.SkeletonHelper( sm )
-				// scene.add(sh)
-				group.add( sh );
+				group.updateMatrixWorld( true );
 
 				vtx.bodyParts.forEach( ( vtxBodyPart, i ) => {
 
@@ -232,7 +213,6 @@ SourceModelLoader.prototype = {
 										geometry.addGroup( vtxStrip.numIndices, vtxStrip.indexOffset, 0 );
 
 										var mesh = new THREE.SkinnedMesh( geometry, material );
-										var skeleton = new THREE.Skeleton( bones );
 										mesh.bind( skeleton );
 
 										if ( vtxStrip.flags & 2 ) mesh.drawMode = THREE.TriangleStripDrawMode;
