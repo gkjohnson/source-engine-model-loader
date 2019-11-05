@@ -2,6 +2,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { SourceModelLoader } from '../src/SourceModelLoader.js';
+import { SkeletonHelper } from 'three';
 
 // globals
 var stats;
@@ -92,6 +93,8 @@ function init() {
 
 			group => {
 
+				const skeletonHelper = new SkeletonHelper( group );
+				scene.add( skeletonHelper );
 				scene.add( group );
 				group.rotation.x = -Math.PI / 2;
 				group.traverse(c => {
