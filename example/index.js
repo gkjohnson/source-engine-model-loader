@@ -106,9 +106,9 @@ function init() {
 				box.setFromObject( group );
 
 				box.getCenter( directionalLight.position );
-				directionalLight.position.x += 10;
+				directionalLight.position.x += 20;
 				directionalLight.position.y += 30;
-				directionalLight.position.z += -20;
+				directionalLight.position.z += 20;
 
 				const dim = Math.max(
 					box.max.x - box.min.x,
