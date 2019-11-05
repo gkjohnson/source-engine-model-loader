@@ -1,12 +1,23 @@
-import * as THREE from 'three';
+import {
+	DefaultLoadingManager,
+	BufferAttribute,
+	Group,
+	Bone,
+	Skeleton,
+	BufferGeometry,
+	SkinnedMesh,
+	TriangleStripDrawMode,
+} from 'three';
 import { MDLLoader } from './MDLLoader.js';
 import { VMTLoader } from './VMTLoader.js';
 import { VTXLoader } from './VTXLoader.js';
 import { VVDLoader } from './VVDLoader.js';
 
+
+
 const SourceModelLoader = function ( manager ) {
 
-	this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
+	this.manager = ( manager !== undefined ) ? manager : DefaultLoadingManager;
 
 };
 
@@ -50,7 +61,7 @@ SourceModelLoader.prototype = {
 
 			reverseInPlace( indexArray );
 
-			return new THREE.BufferAttribute( indexArray, 1, false );
+			return new BufferAttribute( indexArray, 1, false );
 
 		}
 
@@ -129,10 +140,10 @@ SourceModelLoader.prototype = {
 				}
 
 				materials.map( m => m.skinning = true );
-				const group = new THREE.Group();
+				const group = new Group();
 				const bones = mdl.bones.map( b => {
 
-					const bone = new THREE.Bone();
+					const bone = new Bone();
 					bone.position.set(b.pos.x, b.pos.y, b.pos.z);
 					bone.quaternion.set(b.quaternion.x, b.quaternion.y, b.quaternion.z, b.quaternion.w);
 					return bone;
@@ -156,7 +167,7 @@ SourceModelLoader.prototype = {
 
 				// create the shared skeleton and update all the bone matrices that have been added
 				// into the group to ensure the inverses generated for the skeleton on bind are correct
-				const skeleton = new THREE.Skeleton( bones );
+				const skeleton = new Skeleton( bones );
 				group.updateMatrixWorld( true );
 
 				vtx.bodyParts.forEach( ( vtxBodyPart, i ) => {
@@ -191,7 +202,7 @@ SourceModelLoader.prototype = {
 
 								vtxMesh.stripGroups.forEach( vtxStripGroup => {
 
-									var obj = new THREE.Group();
+									var obj = new Group();
 
 									vtxStripGroup.strips.forEach( vtxStrip => {
 
@@ -199,7 +210,7 @@ SourceModelLoader.prototype = {
 										// console.log( vtxStrip.flags, vtxStrip );
 
 										var indexAttr = toGeometryIndex( vtx.buffer, mdlModel, mdlMesh, vtxStripGroup, vtxStrip );
-										var geometry = new THREE.BufferGeometry();
+										var geometry = new BufferGeometry();
 										geometry.setIndex( indexAttr );
 										geometry.addAttribute( 'position', vvd.attributes.position );
 										geometry.addAttribute( 'uv', vvd.attributes.uv );
@@ -212,10 +223,10 @@ SourceModelLoader.prototype = {
 
 										geometry.addGroup( vtxStrip.numIndices, vtxStrip.indexOffset, 0 );
 
-										var mesh = new THREE.SkinnedMesh( geometry, material );
+										var mesh = new SkinnedMesh( geometry, material );
 										mesh.bind( skeleton );
 
-										if ( vtxStrip.flags & 2 ) mesh.drawMode = THREE.TriangleStripDrawMode;
+										if ( vtxStrip.flags & 2 ) mesh.drawMode = TriangleStripDrawMode;
 
 										obj.add( mesh );
 										mesh.userData.materialIndex = mdlMesh.material;

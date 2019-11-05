@@ -1,11 +1,19 @@
-import * as THREE from 'three';
+import {
+	DefaultLoadingManager,
+	FileLoader,
+	Vector3,
+	Quaternion,
+	Euler,
+	Matrix4
+} from 'three';
+
 
 // MDL: https://developer.valvesoftware.com/wiki/MDL
 // https://github.com/ValveSoftware/source-sdk-2013/blob/master/sp/src/public/studio.h
 
 const MDLLoader = function ( manager ) {
 
-	this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
+	this.manager = ( manager !== undefined ) ? manager : DefaultLoadingManager;
 
 };
 
@@ -17,7 +25,7 @@ MDLLoader.prototype = {
 
 		var scope = this;
 
-		var loader = new THREE.FileLoader( this.manager );
+		var loader = new FileLoader( this.manager );
 		loader.setPath( this.path );
 		loader.setResponseType( 'arraybuffer' );
 		loader.load( url, function ( text ) {
@@ -73,42 +81,42 @@ MDLLoader.prototype = {
 			i += 4;
 
 			// Vector eyeposition;
-			var eyeposition = new THREE.Vector3();
+			var eyeposition = new Vector3();
 			eyeposition.x = dataView.getFloat32( i + 0, true );
 			eyeposition.y = dataView.getFloat32( i + 4, true );
 			eyeposition.z = dataView.getFloat32( i + 8, true );
 			i += 12;
 
 			// Vector illumposition;
-			var illumposition = new THREE.Vector3();
+			var illumposition = new Vector3();
 			illumposition.x = dataView.getFloat32( i + 0, true );
 			illumposition.y = dataView.getFloat32( i + 4, true );
 			illumposition.z = dataView.getFloat32( i + 8, true );
 			i += 12;
 
 			// Vector hull_min;
-			var hullMin = new THREE.Vector3();
+			var hullMin = new Vector3();
 			hullMin.x = dataView.getFloat32( i + 0, true );
 			hullMin.y = dataView.getFloat32( i + 4, true );
 			hullMin.z = dataView.getFloat32( i + 8, true );
 			i += 12;
 
 			// Vector hull_max;
-			var hullMax = new THREE.Vector3();
+			var hullMax = new Vector3();
 			hullMax.x = dataView.getFloat32( i + 0, true );
 			hullMax.y = dataView.getFloat32( i + 4, true );
 			hullMax.z = dataView.getFloat32( i + 8, true );
 			i += 12;
 
 			// Vector view_bbmin;
-			var viewBbmin = new THREE.Vector3();
+			var viewBbmin = new Vector3();
 			viewBbmin.x = dataView.getFloat32( i + 0, true );
 			viewBbmin.y = dataView.getFloat32( i + 4, true );
 			viewBbmin.z = dataView.getFloat32( i + 8, true );
 			i += 12;
 
 			// Vector view_bbmax;
-			var viewBbmax = new THREE.Vector3();
+			var viewBbmax = new Vector3();
 			viewBbmax.x = dataView.getFloat32( i + 0, true );
 			viewBbmax.y = dataView.getFloat32( i + 4, true );
 			viewBbmax.z = dataView.getFloat32( i + 8, true );
@@ -608,7 +616,7 @@ MDLLoader.prototype = {
 						mesh.materialparam = dataView.getInt32( offset3 + 28, true );
 
 						mesh.meshid = dataView.getInt32( offset3 + 32, true );
-						mesh.center = new THREE.Vector3(
+						mesh.center = new Vector3(
 							dataView.getFloat32( offset3 + 36, true ),
 							dataView.getFloat32( offset3 + 40, true ),
 							dataView.getFloat32( offset3 + 44, true ),
@@ -656,33 +664,33 @@ MDLLoader.prototype = {
 				// 6 * 4 = 24
 				// 8 + 24 = 32
 
-				bone.pos = new THREE.Vector3();
+				bone.pos = new Vector3();
 				bone.pos.x = dataView.getFloat32( offset + 32, true );
 				bone.pos.y = dataView.getFloat32( offset + 36, true );
 				bone.pos.z = dataView.getFloat32( offset + 40, true );
 
-				bone.quaternion = new THREE.Quaternion();
+				bone.quaternion = new Quaternion();
 				bone.quaternion.x = dataView.getFloat32( offset + 44, true );
 				bone.quaternion.y = dataView.getFloat32( offset + 48, true );
 				bone.quaternion.z = dataView.getFloat32( offset + 52, true );
 				bone.quaternion.w = dataView.getFloat32( offset + 56, true );
 
-				bone.radianEuler = new THREE.Euler();
+				bone.radianEuler = new Euler();
 				bone.radianEuler.x = dataView.getFloat32( offset + 60, true );
 				bone.radianEuler.y = dataView.getFloat32( offset + 64, true );
 				bone.radianEuler.z = dataView.getFloat32( offset + 68, true );
 
-				bone.posscale = new THREE.Vector3();
+				bone.posscale = new Vector3();
 				bone.posscale.x = dataView.getFloat32( offset + 72, true );
 				bone.posscale.y = dataView.getFloat32( offset + 76, true );
 				bone.posscale.z = dataView.getFloat32( offset + 80, true );
 
-				bone.rotscale = new THREE.Vector3();
+				bone.rotscale = new Vector3();
 				bone.rotscale.x = dataView.getFloat32( offset + 84, true );
 				bone.rotscale.y = dataView.getFloat32( offset + 88, true );
 				bone.rotscale.z = dataView.getFloat32( offset + 92, true );
 
-				const posToBone = new THREE.Matrix4();
+				const posToBone = new Matrix4();
 				posToBone.identity();
 				for ( let i = 0; i < 12; i ++ ) {
 
@@ -696,7 +704,7 @@ MDLLoader.prototype = {
 				// 3 * 4 * 4 bytes = 48
 				// 96 + 48 = 144
 
-				bone.qAlignment = new THREE.Quaternion();
+				bone.qAlignment = new Quaternion();
 				bone.qAlignment.x = dataView.getFloat32( offset + 144, true );
 				bone.qAlignment.y = dataView.getFloat32( offset + 148, true );
 				bone.qAlignment.z = dataView.getFloat32( offset + 152, true );

@@ -1,10 +1,17 @@
-import * as THREE from 'three';
+import {
+	DefaultLoadingManager,
+	FileLoader,
+	InterleavedBuffer,
+	BufferAttribute,
+	InterleavedBufferAttribute
+} from 'three';
+
 
 // VVD: https://developer.valvesoftware.com/wiki/VVD
 
 const VVDLoader = function ( manager ) {
 
-	this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
+	this.manager = ( manager !== undefined ) ? manager : DefaultLoadingManager;
 
 };
 
@@ -16,7 +23,7 @@ VVDLoader.prototype = {
 
 		var scope = this;
 
-		var loader = new THREE.FileLoader( this.manager );
+		var loader = new FileLoader( this.manager );
 		loader.setPath( this.path );
 		loader.setResponseType( 'arraybuffer' );
 		loader.load( url, function ( text ) {
@@ -120,11 +127,11 @@ VVDLoader.prototype = {
 
 			var len = header.tangentDataStart - header.vertexDataStart;
 			var interleavedFloat32Array = new Float32Array( buffer, header.vertexDataStart, len / 4 );
-			var interleavedFloat32Buffer = new THREE.InterleavedBuffer( interleavedFloat32Array, 48 / 4 );
+			var interleavedFloat32Buffer = new InterleavedBuffer( interleavedFloat32Array, 48 / 4 );
 			var interleavedUint8Array = new Uint8Array( buffer, header.vertexDataStart, len );
-			var interleavedUint8Buffer = new THREE.InterleavedBuffer( interleavedUint8Array, 48 );
+			var interleavedUint8Buffer = new InterleavedBuffer( interleavedUint8Array, 48 );
 
-			// VVD file describes three bone weights and indices while three.js requires four
+			// VVD file describes three bone weights and indices while THREE.js requires four
 			const totalVerts = len / 48;
 			const skinWeightArray = new Float32Array( totalVerts * 4 );
 			const skinIndexArray = new Uint8Array( totalVerts * 4 );
@@ -148,13 +155,13 @@ VVDLoader.prototype = {
 
 			return {
 
-				skinWeight: new THREE.BufferAttribute( skinWeightArray, 4, false ),
-				skinIndex: new THREE.BufferAttribute( skinIndexArray, 4, false ),
-				numBones: new THREE.InterleavedBufferAttribute( interleavedUint8Buffer, 1, 15, false ),
+				skinWeight: new BufferAttribute( skinWeightArray, 4, false ),
+				skinIndex: new BufferAttribute( skinIndexArray, 4, false ),
+				numBones: new InterleavedBufferAttribute( interleavedUint8Buffer, 1, 15, false ),
 
-				position: new THREE.InterleavedBufferAttribute( interleavedFloat32Buffer, 3, 4, false ),
-				normal: new THREE.InterleavedBufferAttribute( interleavedFloat32Buffer, 3, 7, false ),
-				uv: new THREE.InterleavedBufferAttribute( interleavedFloat32Buffer, 2, 10, false ),
+				position: new InterleavedBufferAttribute( interleavedFloat32Buffer, 3, 4, false ),
+				normal: new InterleavedBufferAttribute( interleavedFloat32Buffer, 3, 7, false ),
+				uv: new InterleavedBufferAttribute( interleavedFloat32Buffer, 2, 10, false ),
 
 			};
 

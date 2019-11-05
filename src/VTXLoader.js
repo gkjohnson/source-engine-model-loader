@@ -1,10 +1,13 @@
-import * as THREE from 'three';
+import {
+	DefaultLoadingManager,
+	FileLoader
+} from 'three';
 
 // VTX: https://developer.valvesoftware.com/wiki/VTX
 
 const VTXLoader = function ( manager ) {
 
-	this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
+	this.manager = ( manager !== undefined ) ? manager : DefaultLoadingManager;
 
 };
 
@@ -16,7 +19,7 @@ VTXLoader.prototype = {
 
 		var scope = this;
 
-		var loader = new THREE.FileLoader( this.manager );
+		var loader = new FileLoader( this.manager );
 		loader.setPath( this.path );
 		loader.setResponseType( 'arraybuffer' );
 		loader.load( url, function ( text ) {

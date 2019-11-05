@@ -1,4 +1,12 @@
-import * as THREE from 'three';
+import {
+	CompressedTextureLoader,
+	RGBAFormat,
+	RGBFormat,
+	RGB_S3TC_DXT1_Format,
+	RGBA_S3TC_DXT3_Format,
+	RGBA_S3TC_DXT5_Format,
+	LinearFilter,
+} from 'three';
 
 // VTF: https://developer.valvesoftware.com/wiki/Valve_Texture_Format
 
@@ -6,13 +14,13 @@ import * as THREE from 'three';
 // TODO: get cube maps, animations, volume textures
 const VTFLoader = function ( manager ) {
 
-	THREE.CompressedTextureLoader.call( this, manager );
+	CompressedTextureLoader.call( this, manager );
 
 	this._parser = VTFLoader.parse;
 
 };
 
-VTFLoader.prototype = Object.create( THREE.CompressedTextureLoader.prototype );
+VTFLoader.prototype = Object.create( CompressedTextureLoader.prototype );
 VTFLoader.prototype.constructor = VTFLoader;
 
 VTFLoader.prototype.parse = function ( buffer, loadMipmaps ) {
@@ -152,34 +160,34 @@ VTFLoader.prototype.parse = function ( buffer, loadMipmaps ) {
 					byteArray[ i + 3 ] = a;
 
 				}
-				threeFormat = THREE.RGBAFormat;
+				threeFormat = RGBAFormat;
 				break;
 			case 3: // BGR888
 				var dataLength = width * height * 3;
 				byteArray = new Uint8Array( buffer, offset, dataLength );
 				bgrToRgb( byteArray, 3 );
-				threeFormat = THREE.RGBFormat;
+				threeFormat = RGBFormat;
 				break;
 			case 12: // BGRA8888
 				var dataLength = width * height * 4;
 				byteArray = new Uint8Array( buffer, offset, dataLength );
 				bgrToRgb( byteArray, 4 );
-				threeFormat = THREE.RGBAFormat;
+				threeFormat = RGBAFormat;
 				break;
 			case 13: // DXT1
 				var dataLength = dxtSz * 8; // 8 blockBytes
 				byteArray = new Uint8Array( buffer, offset, dataLength );
-				threeFormat = THREE.RGB_S3TC_DXT1_Format;
+				threeFormat = RGB_S3TC_DXT1_Format;
 				break;
 			case 14: // DXT3
 				var dataLength = dxtSz * 16; // 16 blockBytes
 				byteArray = new Uint8Array( buffer, offset, dataLength );
-				threeFormat = THREE.RGBA_S3TC_DXT3_Format;
+				threeFormat = RGBA_S3TC_DXT3_Format;
 				break;
 			case 15: // DXT5
 				var dataLength = dxtSz * 16; // 16 blockBytes
 				byteArray = new Uint8Array( buffer, offset, dataLength );
-				threeFormat = THREE.RGBA_S3TC_DXT5_Format;
+				threeFormat = RGBA_S3TC_DXT5_Format;
 				break;
 			default:
 				console.error( `VTFLoader: Format variant ${ format } is unsupported.` );
@@ -255,9 +263,9 @@ VTFLoader.prototype.parse = function ( buffer, loadMipmaps ) {
 
 VTFLoader.prototype.load = function ( ...args ) {
 
-	const tex = THREE.CompressedTextureLoader.prototype.load.call( this, ...args );
-	tex.minFilter = THREE.LinearFilter;
-	tex.magFilter = THREE.LinearFilter;
+	const tex = CompressedTextureLoader.prototype.load.call( this, ...args );
+	tex.minFilter = LinearFilter;
+	tex.magFilter = LinearFilter;
 	return tex;
 
 };
