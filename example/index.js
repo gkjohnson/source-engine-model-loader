@@ -114,6 +114,25 @@ function init() {
 				ground.position.y = bb.min.y;
 				scene.add( ground );
 
+				const box = new THREE.Box3();
+				box.setFromObject( group );
+
+				box.getCenter( directionalLight.position );
+				directionalLight.position.x += 10;
+				directionalLight.position.y += 30;
+				directionalLight.position.z += -20;
+
+				const dim = Math.max(
+					box.max.x - box.min.x,
+					box.max.y - box.min.y,
+					box.max.z - box.min.z,
+				);
+
+				const cam = directionalLight.shadow.camera
+				cam.left = cam.bottom = - dim / 2;
+				cam.right = cam.top = dim / 2;
+				cam.updateProjectionMatrix();
+
 			} );
 
 	// new THREE.MDLLoader().load( '../models/Link_-_Hyrule_Warriors_IpV1rRa/models/hyrulewarriors/link_classic.mdl', d => console.log( d ) );
