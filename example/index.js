@@ -251,8 +251,10 @@ const raycastBones = ( function() {
 		bone.parent.matrixWorld.decompose( group.position, group.quaternion, group.scale );
 		bone.matrixWorld.decompose( pos, quat, sca );
 		group.lookAt( pos );
-		group.scale.z = bone.position.length();
+
+		group.scale.z = group.position.distanceTo( pos );
 		group.scale.y = group.scale.x = 0.25;
+
 		group.updateMatrixWorld();
 
 	}
