@@ -4,6 +4,8 @@ Three.js loader for parsing Valve's Source Engine models.
 
 Get models from [SFMLab](https://SFMLab.com).
 
+Demo [here!](https://gkjohnson.github.io/source-engine-model-loader/dist/index.html)
+
 # Use
 
 ```js
