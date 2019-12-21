@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "static-server",
-    "parcel": "parcel watch ./example/index.html --public-url ./"
+    "parcel": "parcel watch ./example/index.html --public-url ./",
+    "build": "parcel build ./example/index.html --public-url ./ --no-cache"
   },
   "repository": {
     "type": "git",
@@ -21,7 +22,6 @@
     "three": "^0.109.0"
   },
   "devDependencies": {
-    "three": "^0.109.0",
     "static-server": "^2.2.1",
     "eslint-config-mdcs": "^4.2.3",
     "parcel-bundler": "^1.12.4"
