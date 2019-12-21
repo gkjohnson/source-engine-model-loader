@@ -13,8 +13,6 @@ import { VMTLoader } from './VMTLoader.js';
 import { VTXLoader } from './VTXLoader.js';
 import { VVDLoader } from './VVDLoader.js';
 
-
-
 const SourceModelLoader = function ( manager ) {
 
 	this.manager = ( manager !== undefined ) ? manager : DefaultLoadingManager;
@@ -184,6 +182,8 @@ SourceModelLoader.prototype = {
 						var mdlModel = mdlBodyPart.models[ i2 ];
 						vtxModel.lods.forEach( ( vtxLod, i3 ) => {
 
+							// TODO: Skipping everything other than the highest
+							// quality level of detail
 							if ( i3 !== 0 ) return;
 
 							if ( mdlModel.nummeshes !== vtxLod.numMeshes ) {

@@ -1,8 +1,22 @@
-
-import * as THREE from 'three';
+import {
+	SkeletonHelper,
+	WebGLRenderer,
+	PerspectiveCamera,
+	Scene,
+	DirectionalLight,
+	AmbientLight,
+	Mesh,
+	MeshBasicMaterial,
+	DoubleSide,
+	Box3,
+	PlaneBufferGeometry,
+	ShadowMaterial
+} from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { SourceModelLoader } from '../src/SourceModelLoader.js';
-import { SkeletonHelper } from 'three';
+import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
+
+
 
 // globals
 var stats;
@@ -15,6 +29,7 @@ var params = {
 var camera, scene, renderer, controls;
 var directionalLight, ambientLight;
 var skeletonHelper, model, gui;
+var transformControls;
 
 init();
 rebuildGui();
@@ -22,7 +37,7 @@ animate();
 
 function init() {
 
-	renderer = new THREE.WebGLRenderer( { antialias: true } );
+	renderer = new WebGLRenderer( { antialias: true } );
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	renderer.setClearColor( 0x263238 );
@@ -32,12 +47,12 @@ function init() {
 	document.body.appendChild( renderer.domElement );
 
 	// initialize renderer, scene, camera
-	camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 6000 );
+	camera = new PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 6000 );
 	camera.position.set( 60, 30, 60 );
 
-	scene = new THREE.Scene();
+	scene = new Scene();
 
-	directionalLight = new THREE.DirectionalLight();
+	directionalLight = new DirectionalLight();
 	directionalLight.position.set( 1, 3, -2 ).multiplyScalar( 100 );
 	directionalLight.castShadow = true;
 
@@ -46,10 +61,10 @@ function init() {
 	dlShadowCam.top = dlShadowCam.right = 100;
 	scene.add( directionalLight );
 
-	ambientLight = new THREE.AmbientLight( 0xffffff, 0.25 );
+	ambientLight = new AmbientLight( 0xffffff, 0.25 );
 	scene.add( ambientLight );
 
-	// plane = new THREE.Mesh( new THREE.PlaneBufferGeometry( 10, 10 ), new THREE.MeshBasicMaterial() );
+	// plane = new Mesh( new PlaneBufferGeometry( 10, 10 ), new MeshBasicMaterial() );
 	// plane.material.map = new VTFLoader().load( '../models/Link_-_Hyrule_Warriors_IpV1rRa/materials/models/hyrulewarriors/link/equipment/balls_and_chains/ball_and_chain_lvl2.vtf' );
 	// plane.material.map = new VTFLoader().load( '../models/Overwatch/Overwatch/materials/models/tfa/overwatch/torbjorn/body_d.vtf' );
 	// scene.add( plane );
@@ -79,6 +94,8 @@ function init() {
 
 
 			group => {
+				window.group = group;
+				window.transformControls = transformControls;
 
 				skeletonHelper = new SkeletonHelper( group );
 				scene.add( skeletonHelper );
@@ -89,20 +106,19 @@ function init() {
 					c.receiveShadow = true;
 				});
 
-				console.log( group );
-				const bb = new THREE.Box3();
+				const bb = new Box3();
 				bb.setFromObject( group );
 				bb.getCenter( controls.target );
 
-				const ground = new THREE.Mesh( new THREE.PlaneBufferGeometry() );
-				ground.material = new THREE.ShadowMaterial( { opacity: 0.5, transparent: true } );
+				const ground = new Mesh( new PlaneBufferGeometry() );
+				ground.material = new ShadowMaterial( { side: DoubleSide, opacity: 0.5, transparent: true } );
 				ground.receiveShadow = true;
 				ground.scale.multiplyScalar( 1000 );
 				ground.rotation.x = -Math.PI / 2;
 				ground.position.y = bb.min.y;
 				scene.add( ground );
 
-				const box = new THREE.Box3();
+				const box = new Box3();
 				box.setFromObject( group );
 
 				box.getCenter( directionalLight.position );
@@ -126,12 +142,6 @@ function init() {
 
 			} );
 
-	// new THREE.MDLLoader().load( '../models/Link_-_Hyrule_Warriors_IpV1rRa/models/hyrulewarriors/link_classic.mdl', d => console.log( d ) );
-
-	// new THREE.VVDLoader().load( '../models/Link_-_Hyrule_Warriors_IpV1rRa/models/hyrulewarriors/link_classic.vvd', d => console.log( d ) );
-
-	// new THREE.VTXLoader().load( '../models/Link_-_Hyrule_Warriors_IpV1rRa/models/hyrulewarriors/link_classic.dx90.vtx', d => console.log( d ) );
-
 	// stats
 	stats = new Stats();
 	document.body.appendChild( stats.dom );
@@ -140,6 +150,13 @@ function init() {
 	controls = new OrbitControls( camera, renderer.domElement );
 	controls.minDistance = 5;
 	controls.maxDistance = 3000;
+
+	transformControls = new TransformControls( camera, renderer.domElement );
+	transformControls.mode = 'rotate';
+	transformControls.space = 'local';
+	transformControls.size = 0.5;
+	transformControls.addEventListener( 'dragging-changed', e => controls.enabled = ! e.value );
+	scene.add( transformControls );
 
 	window.addEventListener( 'resize', onWindowResize, false );
 
