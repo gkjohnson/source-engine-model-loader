@@ -127,12 +127,13 @@ VMTLoader.prototype = {
 					material.map.wrapT = RepeatWrapping;
 					break;
 				case '$bumpmap':
-					material.normalMap = vtfLoader.load( `${ path }${ field }.vtf` );
-					material.normalMap.wrapS = RepeatWrapping;
-					material.normalMap.wrapT = RepeatWrapping;
+					// TODO: This doesn't seem to quite map correctly to normal map
+					// material.normalMap = vtfLoader.load( `${ path }${ field }.vtf` );
+					// material.normalMap.wrapS = RepeatWrapping;
+					// material.normalMap.wrapT = RepeatWrapping;
 					break;
 				case '$phongexponenttexture':
-					// NOTE: This doesn't quite map appropriately to a specular map
+					// TODO: This doesn't quite map appropriately to a specular map
 					material.specularMap = vtfLoader.load( `${ path }${ field }.vtf` );
 					material.specularMap.wrapS = RepeatWrapping;
 					material.specularMap.wrapT = RepeatWrapping;

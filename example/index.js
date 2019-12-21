@@ -67,11 +67,6 @@ function init() {
 	ambientLight = new AmbientLight( 0xffffff, 0.25 );
 	scene.add( ambientLight );
 
-	// plane = new Mesh( new PlaneBufferGeometry( 10, 10 ), new MeshBasicMaterial() );
-	// plane.material.map = new VTFLoader().load( '../models/Link_-_Hyrule_Warriors_IpV1rRa/materials/models/hyrulewarriors/link/equipment/balls_and_chains/ball_and_chain_lvl2.vtf' );
-	// plane.material.map = new VTFLoader().load( '../models/Overwatch/Overwatch/materials/models/tfa/overwatch/torbjorn/body_d.vtf' );
-	// scene.add( plane );
-
 	new SourceModelLoader()
 		.load(
 			'../models/shrek/models/shrekgame/shrek',
