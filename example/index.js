@@ -15,6 +15,7 @@ import {
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { SourceModelLoader } from '../src/SourceModelLoader.js';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
+import { Group, BoxBufferGeometry, Vector3, Quaternion, Raycaster, Vector2 } from '../../three.js/build/three.js';
 
 
 
@@ -30,6 +31,8 @@ var camera, scene, renderer, controls;
 var directionalLight, ambientLight;
 var skeletonHelper, model, gui;
 var transformControls;
+var mouse = new Vector2();
+var mouseDown = new Vector2();
 
 init();
 rebuildGui();
@@ -71,9 +74,9 @@ function init() {
 
 	new SourceModelLoader()
 		.load(
-			// '../models/shrek/models/shrekgame/shrek',
+			'../models/shrek/models/shrekgame/shrek',
 			// '../models/VTOL/models/kss/mirrorsedgecatalyst/vtol/kss_vtol',
-			'../models/NierPOD/models/cold/male/NIERPOD/NIERPOD',
+			// '../models/NierPOD/models/cold/male/NIERPOD/NIERPOD',
 			// '../models/neopolitan/models/rwby/Neopolitan/neopolitan',
 			// '../models/boxing-gloves/models/grey/props/held/boxing_glove_l',
 			// '../models/advanced_suits_ds2/models/deadspacesuits/isaacadvancedsuit',
@@ -159,6 +162,26 @@ function init() {
 	scene.add( transformControls );
 
 	window.addEventListener( 'resize', onWindowResize, false );
+	renderer.domElement.addEventListener( 'mousemove', onMouseMove, false );
+	renderer.domElement.addEventListener( 'mousedown', onMouseDown, false );
+	renderer.domElement.addEventListener( 'mouseup', onMouseUp, false );
+	window.addEventListener( 'keydown', e => {
+
+		switch ( e.key ) {
+
+			case 'w':
+				transformControls.mode = 'translate';
+				break;
+			case 'e':
+				transformControls.mode = 'rotate';
+				break;
+			case 'r':
+				transformControls.mode = 'scale';
+				break;
+
+		}
+
+	});
 
 }
 
@@ -204,6 +227,113 @@ function onWindowResize() {
 	camera.updateProjectionMatrix();
 
 	renderer.setSize( width, height );
+
+}
+
+const raycastBones = ( function() {
+
+	const group = new Group();
+	const mesh = new Mesh( new BoxBufferGeometry(), new MeshBasicMaterial() );
+	mesh.material.opacity = 1;
+	mesh.material.color.set( 0xe91e63 );
+	mesh.material.transparent = true;
+	mesh.material.depthTest = false;
+	mesh.position.z = 0.5;
+	group.add(mesh);
+
+	const pos = new Vector3();
+	const quat = new Quaternion();
+	const sca = new Vector3();
+	const raycaster = new Raycaster();
+
+	function alignToBone( bone ) {
+
+		bone.parent.matrixWorld.decompose( group.position, group.quaternion, group.scale );
+		bone.matrixWorld.decompose( pos, quat, sca );
+		group.lookAt( pos );
+		group.scale.z = bone.position.length();
+		group.scale.y = group.scale.x = 0.25;
+		group.updateMatrixWorld();
+
+	}
+
+	return function( mousePos ) {
+
+		if ( model ) {
+
+			const hits = [];
+
+			model.traverse( c => {
+
+				if ( c.isBone && c.parent.isBone ) {
+
+					alignToBone( c );
+					raycaster.setFromCamera( mousePos, camera );
+
+					const arr = [];
+					mesh.raycast( raycaster, arr );
+					arr.forEach( item => item.bone = c );
+					hits.push( ...arr );
+					scene.add( group );
+
+				}
+
+			} );
+
+			hits.sort( ( a, b ) => a.distance - b.distance );
+
+			if ( hits.length !== 0 && ! transformControls.dragging ) {
+
+				alignToBone( hits[ 0 ].bone )
+				group.visible = true;
+
+			} else {
+
+				group.visible = false;
+
+			}
+
+			return hits[ 0 ] ? hits[ 0 ].bone : null;
+
+		}
+
+		return null;
+
+	}
+
+} )();
+
+function onMouseMove( event ) {
+
+	mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
+	mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
+	raycastBones( mouse );
+
+}
+
+function onMouseDown() {
+
+	mouseDown.copy( mouse );
+
+}
+
+function onMouseUp( e ) {
+
+	if ( mouseDown.distanceTo( mouse ) < 0.001 ) {
+
+		const hitBone = raycastBones( mouse );
+		if ( hitBone ) {
+
+			// use right click to select tip bone
+			transformControls.attach( e.button === 2 ? hitBone : hitBone.parent );
+
+		} else {
+
+			transformControls.detach();
+
+		}
+
+	}
 
 }
 
