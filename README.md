@@ -1,6 +1,8 @@
 # source-engine-model-loader
 
-three.js loader for parsing source engine models
+Three.js loader for parsing Valve's Source Engine models.
+
+Get models from [SFMLab](https://SFMLab.com).
 
 # Use
 
