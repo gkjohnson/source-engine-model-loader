@@ -10,13 +10,14 @@ import {
 	DoubleSide,
 	Box3,
 	PlaneBufferGeometry,
-	ShadowMaterial
+	ShadowMaterial,
+	ShaderLib
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { SourceModelLoader } from '../src/SourceModelLoader.js';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
-import { Group, BoxBufferGeometry, Vector3, Quaternion, Raycaster, Vector2 } from '../../three.js/build/three.js';
-
+import { Group, Vector3, Quaternion, Raycaster, Vector2, CylinderBufferGeometry, ShaderMaterial } from '../../three.js/build/three.js';
+import { SkinWeightMixin } from './SkinWeightsShaderMixin.js';
 
 
 // globals
@@ -29,10 +30,21 @@ var params = {
 };
 var camera, scene, renderer, controls;
 var directionalLight, ambientLight;
-var skeletonHelper, model, gui;
+var skeletonHelper, model, skeleton, gui;
 var transformControls;
 var mouse = new Vector2();
 var mouseDown = new Vector2();
+
+var SkinWeightShader = SkinWeightMixin(ShaderLib.phong);
+var skinWeightsMaterial = new ShaderMaterial(SkinWeightShader);
+skinWeightsMaterial.lights = true;
+skinWeightsMaterial.skinning = true;
+skinWeightsMaterial.transparent = true;
+skinWeightsMaterial.depthWrite = false;
+skinWeightsMaterial.uniforms.skinWeightColor.value.set(0xe91e63);
+skinWeightsMaterial.uniforms.emissive.value.set(0xe91e63);
+skinWeightsMaterial.uniforms.opacity.value = 0.25;
+skinWeightsMaterial.uniforms.shininess.value = 0.01;
 
 init();
 rebuildGui();
@@ -92,16 +104,21 @@ function init() {
 
 
 			group => {
-				window.group = group;
-				window.transformControls = transformControls;
-
 				skeletonHelper = new SkeletonHelper( group );
 				scene.add( skeletonHelper );
 				scene.add( group );
 				group.rotation.x = -Math.PI / 2;
 				group.traverse(c => {
-					c.castShadow = true;
-					c.receiveShadow = true;
+
+					if (c.isMesh) {
+						c.castShadow = true;
+						c.receiveShadow = true;
+					}
+
+					if (c.isSkinnedMesh) {
+						skeleton = c.skeleton;
+					}
+
 				});
 
 				const bb = new Box3();
@@ -109,7 +126,7 @@ function init() {
 				bb.getCenter( controls.target );
 
 				const ground = new Mesh( new PlaneBufferGeometry() );
-				ground.material = new ShadowMaterial( { side: DoubleSide, opacity: 0.5, transparent: true } );
+				ground.material = new ShadowMaterial( { side: DoubleSide, opacity: 0.5, transparent: true, depthWrite: false } );
 				ground.receiveShadow = true;
 				ground.scale.multiplyScalar( 1000 );
 				ground.rotation.x = -Math.PI / 2;
@@ -250,7 +267,7 @@ const raycastBones = ( function() {
 		group.lookAt( pos );
 
 		group.scale.z = group.position.distanceTo( pos );
-		group.scale.y = group.scale.x = 0.25;
+		group.scale.y = group.scale.x = 0.5;
 
 		group.updateMatrixWorld();
 
@@ -284,11 +301,25 @@ const raycastBones = ( function() {
 			if ( hits.length !== 0 && ! transformControls.dragging ) {
 
 				alignToBone( hits[ 0 ].bone )
+				group.scale.y = group.scale.x = 0.25;
+
 				group.visible = true;
+				if ( skeleton ) {
+					skinWeightsMaterial.uniforms.skinWeightIndex.value = skeleton.bones.indexOf( hits[ 0 ].bone.parent );
+				}
 
 			} else {
 
 				group.visible = false;
+				if ( skeleton && transformControls.object ) {
+
+					skinWeightsMaterial.uniforms.skinWeightIndex.value = skeleton.bones.indexOf( transformControls.object );
+
+				} else {
+
+					skinWeightsMaterial.uniforms.skinWeightIndex.value = - 1;
+
+				}
 
 			}
 
@@ -359,7 +390,7 @@ function render() {
 		const materials = model.userData.materials;
 		model.traverse( c => {
 
-			if ( c.material ) {
+			if ( c.isMesh ) {
 
 				c.material = materials[ skinsTable[ params.skin ][ c.userData.materialIndex ] ];
 
@@ -371,5 +402,23 @@ function render() {
 
 	controls.update();
 	renderer.render( scene, camera );
+
+	if ( model ) {
+
+		model.traverse( c => {
+
+			if ( c.isMesh ) {
+
+				c.material = skinWeightsMaterial;
+
+			}
+
+			renderer.autoClear = false;
+			renderer.render( scene, camera );
+			renderer.autoClear = true;
+
+		} );
+
+	}
 
 }
