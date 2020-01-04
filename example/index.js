@@ -228,12 +228,14 @@ function onWindowResize() {
 const raycastBones = ( function() {
 
 	const group = new Group();
-	const mesh = new Mesh( new BoxBufferGeometry(), new MeshBasicMaterial() );
+	const mesh = new Mesh( new CylinderBufferGeometry(), new MeshBasicMaterial() );
 	mesh.material.opacity = 1;
 	mesh.material.color.set( 0xe91e63 );
 	mesh.material.transparent = true;
 	mesh.material.depthTest = false;
 	mesh.position.z = 0.5;
+	mesh.rotation.x = Math.PI / 2;
+	mesh.scale.set(0.5, 1, 0.5);
 	group.add(mesh);
 
 	const pos = new Vector3();
