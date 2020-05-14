@@ -20,6 +20,7 @@ import {
 	Vector2,
 	CylinderBufferGeometry,
 	ShaderMaterial,
+	Triangle,
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { SourceModelLoader } from '../src/SourceModelLoader.js';
@@ -175,7 +176,7 @@ function init() {
 	transformControls = new TransformControls( camera, renderer.domElement );
 	transformControls.mode = 'rotate';
 	transformControls.space = 'local';
-	transformControls.size = 0.5;
+	transformControls.size = 1;
 	transformControls.addEventListener( 'dragging-changed', e => controls.enabled = ! e.value );
 	scene.add( transformControls );
 
@@ -250,74 +251,80 @@ function onWindowResize() {
 
 const raycastBones = ( function() {
 
-	const group = new Group();
-	const mesh = new Mesh( new CylinderBufferGeometry(), new MeshBasicMaterial() );
-	mesh.material.opacity = 1;
-	mesh.material.color.set( 0xe91e63 );
-	mesh.material.transparent = true;
-	mesh.material.depthTest = false;
-	mesh.position.z = 0.5;
-	mesh.rotation.x = Math.PI / 2;
-	mesh.scale.set(0.5, 1, 0.5);
-	group.add(mesh);
-
-	const pos = new Vector3();
-	const quat = new Quaternion();
-	const sca = new Vector3();
 	const raycaster = new Raycaster();
-
-	function alignToBone( bone ) {
-
-		bone.parent.matrixWorld.decompose( group.position, group.quaternion, group.scale );
-		bone.matrixWorld.decompose( pos, quat, sca );
-		group.lookAt( pos );
-
-		group.scale.z = group.position.distanceTo( pos );
-		group.scale.y = group.scale.x = 0.5;
-
-		group.updateMatrixWorld();
-
-	}
+	const triangle = new Triangle();
+	const baryCoord = new Vector3();
+	const getFunctions = [ 'getX', 'getY', 'getZ', 'getW' ];
 
 	return function( mousePos ) {
 
 		if ( model ) {
 
-			const hits = [];
+			raycaster.setFromCamera( mousePos, camera );
 
-			model.traverse( c => {
+			const res = raycaster.intersectObject( model, true );
+			if ( res.length ) {
 
-				if ( c.isBone && c.parent.isBone ) {
+				const hit = res[ 0 ];
+				const object = hit.object;
+				const geometry = object.geometry;
+				const face = hit.face;
 
-					alignToBone( c );
-					raycaster.setFromCamera( mousePos, camera );
+				const skinWeightAttr = geometry.getAttribute( 'skinWeight' );
+				const skinIndexAttr = geometry.getAttribute( 'skinIndex' );
+				const weightTotals = {};
 
-					const arr = [];
-					mesh.raycast( raycaster, arr );
-					arr.forEach( item => item.bone = c );
-					hits.push( ...arr );
-					scene.add( group );
+				const aIndex = face.a;
+				const bIndex = face.b;
+				const cIndex = face.c;
+
+				object.boneTransform( aIndex, triangle.a );
+				object.boneTransform( bIndex, triangle.b );
+				object.boneTransform( cIndex, triangle.c );
+
+				triangle.a.applyMatrix4( object.matrixWorld );
+				triangle.b.applyMatrix4( object.matrixWorld );
+				triangle.c.applyMatrix4( object.matrixWorld );
+
+				triangle.getBarycoord( hit.point, baryCoord );
+				for ( let i = 0; i < skinIndexAttr.itemSize; i ++ ) {
+
+					const func = getFunctions[ i ];
+					const aWeightIndex = skinIndexAttr[ func ]( aIndex );
+					const bWeightIndex = skinIndexAttr[ func ]( bIndex );
+					const cWeightIndex = skinIndexAttr[ func ]( cIndex );
+					const aWeight = skinWeightAttr[ func ]( aIndex );
+					const bWeight = skinWeightAttr[ func ]( bIndex );
+					const cWeight = skinWeightAttr[ func ]( cIndex );
+
+					weightTotals[ aWeightIndex ] = weightTotals[ aWeightIndex ] || 0;
+					weightTotals[ bWeightIndex ] = weightTotals[ bWeightIndex ] || 0;
+					weightTotals[ cWeightIndex ] = weightTotals[ cWeightIndex ] || 0;
+
+					weightTotals[ aWeightIndex ] += aWeight * baryCoord.x;
+					weightTotals[ bWeightIndex ] += bWeight * baryCoord.y;
+					weightTotals[ cWeightIndex ] += cWeight * baryCoord.z;
 
 				}
 
-			} );
+				const sorted =
+					Object
+						.entries( weightTotals )
+						.map( ( [ key, value ] ) => ( { weight: value, index: key } ) )
+						.sort( ( a, b ) => b.weight - a.weight );
 
-			hits.sort( ( a, b ) => a.distance - b.distance );
+				const boneIndex = sorted[ 0 ].index;
+				const bone = skeleton.bones[ boneIndex ];
 
-			if ( hits.length !== 0 && ! transformControls.dragging ) {
+				skinWeightsMaterial.uniforms.skinWeightIndex.value = boneIndex;
 
-				alignToBone( hits[ 0 ].bone )
-				group.scale.y = group.scale.x = 0.25;
-
-				group.visible = true;
-				if ( skeleton ) {
-					skinWeightsMaterial.uniforms.skinWeightIndex.value = skeleton.bones.indexOf( hits[ 0 ].bone.parent );
-				}
+				return bone;
 
 			} else {
 
-				group.visible = false;
-				if ( skeleton && transformControls.object ) {
+				console.log(skeleton.bones.indexOf( transformControls.object ));
+
+				if ( transformControls.object ) {
 
 					skinWeightsMaterial.uniforms.skinWeightIndex.value = skeleton.bones.indexOf( transformControls.object );
 
@@ -327,9 +334,9 @@ const raycastBones = ( function() {
 
 				}
 
-			}
+				return null;
 
-			return hits[ 0 ] ? hits[ 0 ].bone : null;
+			}
 
 		}
 
@@ -355,17 +362,19 @@ function onMouseDown() {
 
 function onMouseUp( e ) {
 
+	window.transformControls = transformControls
 	if ( mouseDown.distanceTo( mouse ) < 0.001 ) {
 
 		const hitBone = raycastBones( mouse );
 		if ( hitBone ) {
 
 			// use right click to select tip bone
-			transformControls.attach( e.button === 2 ? hitBone : hitBone.parent );
+			transformControls.attach( hitBone );
 
 		} else {
 
 			transformControls.detach();
+			raycastBones( mouse );
 
 		}
 
