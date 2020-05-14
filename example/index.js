@@ -6,19 +6,15 @@ import {
 	DirectionalLight,
 	AmbientLight,
 	Mesh,
-	MeshBasicMaterial,
 	DoubleSide,
 	Box3,
 	PlaneBufferGeometry,
 	ShadowMaterial,
 	ShaderLib,
 	LinearEncoding,
-	Group,
 	Vector3,
-	Quaternion,
 	Raycaster,
 	Vector2,
-	CylinderBufferGeometry,
 	ShaderMaterial,
 	Triangle,
 } from 'three';
@@ -32,7 +28,7 @@ import { SkinWeightMixin } from './SkinWeightsShaderMixin.js';
 var stats;
 var params = {
 
-	showSkeleton: true,
+	showSkeleton: false,
 	skin: 0
 
 };
@@ -43,15 +39,15 @@ var transformControls;
 var mouse = new Vector2();
 var mouseDown = new Vector2();
 
-var SkinWeightShader = SkinWeightMixin(ShaderLib.phong);
-var skinWeightsMaterial = new ShaderMaterial(SkinWeightShader);
+var SkinWeightShader = SkinWeightMixin( ShaderLib.phong );
+var skinWeightsMaterial = new ShaderMaterial( SkinWeightShader );
 skinWeightsMaterial.lights = true;
 skinWeightsMaterial.skinning = true;
 skinWeightsMaterial.transparent = true;
 skinWeightsMaterial.depthWrite = false;
-skinWeightsMaterial.uniforms.skinWeightColor.value.set(0xe91e63);
-skinWeightsMaterial.uniforms.emissive.value.set(0xe91e63);
-skinWeightsMaterial.uniforms.opacity.value = 0.25;
+skinWeightsMaterial.uniforms.skinWeightColor.value.set( 0xe91e63 );
+skinWeightsMaterial.uniforms.emissive.value.set( 0xe91e63 );
+skinWeightsMaterial.uniforms.opacity.value = 0.4;
 skinWeightsMaterial.uniforms.shininess.value = 0.01;
 
 init();
@@ -321,8 +317,6 @@ const raycastBones = ( function() {
 				return bone;
 
 			} else {
-
-				console.log(skeleton.bones.indexOf( transformControls.object ));
 
 				if ( transformControls.object ) {
 
