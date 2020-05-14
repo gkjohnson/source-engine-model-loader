@@ -11,12 +11,19 @@ import {
 	Box3,
 	PlaneBufferGeometry,
 	ShadowMaterial,
-	ShaderLib
+	ShaderLib,
+	LinearEncoding,
+	Group,
+	Vector3,
+	Quaternion,
+	Raycaster,
+	Vector2,
+	CylinderBufferGeometry,
+	ShaderMaterial,
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { SourceModelLoader } from '../src/SourceModelLoader.js';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
-import { Group, Vector3, Quaternion, Raycaster, Vector2, CylinderBufferGeometry, ShaderMaterial } from '../../three.js/build/three.js';
 import { SkinWeightMixin } from './SkinWeightsShaderMixin.js';
 
 
@@ -56,8 +63,7 @@ function init() {
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	renderer.setClearColor( 0x263238 );
-	renderer.gammaInput = true;
-	renderer.gammaOutput = true;
+	renderer.outputEncoding = LinearEncoding;
 	renderer.shadowMap.enabled = true;
 	document.body.appendChild( renderer.domElement );
 
@@ -413,11 +419,11 @@ function render() {
 
 			}
 
-			renderer.autoClear = false;
-			renderer.render( scene, camera );
-			renderer.autoClear = true;
-
 		} );
+
+		renderer.autoClear = false;
+		renderer.render( scene, camera );
+		renderer.autoClear = true;
 
 	}
 

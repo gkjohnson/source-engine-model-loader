@@ -3,6 +3,7 @@ import {
 	FileLoader,
 	MeshPhongMaterial,
 	RepeatWrapping,
+	LinearEncoding,
 } from 'three';
 import { VTFLoader } from './VTFLoader.js';
 
@@ -125,6 +126,7 @@ VMTLoader.prototype = {
 					material.map = vtfLoader.load( `${ path }${ field }.vtf` );
 					material.map.wrapS = RepeatWrapping;
 					material.map.wrapT = RepeatWrapping;
+					material.map.encoding = LinearEncoding;
 					break;
 				case '$bumpmap':
 					// TODO: This doesn't seem to quite map correctly to normal map

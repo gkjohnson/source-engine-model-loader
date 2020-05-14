@@ -212,11 +212,11 @@ SourceModelLoader.prototype = {
 										var indexAttr = toGeometryIndex( vtx.buffer, mdlModel, mdlMesh, vtxStripGroup, vtxStrip );
 										var geometry = new BufferGeometry();
 										geometry.setIndex( indexAttr );
-										geometry.addAttribute( 'position', vvd.attributes.position );
-										geometry.addAttribute( 'uv', vvd.attributes.uv );
-										geometry.addAttribute( 'normal', vvd.attributes.normal );
-										geometry.addAttribute( 'skinWeight', vvd.attributes.skinWeight );
-										geometry.addAttribute( 'skinIndex', vvd.attributes.skinIndex );
+										geometry.setAttribute( 'position', vvd.attributes.position );
+										geometry.setAttribute( 'uv', vvd.attributes.uv );
+										geometry.setAttribute( 'normal', vvd.attributes.normal );
+										geometry.setAttribute( 'skinWeight', vvd.attributes.skinWeight );
+										geometry.setAttribute( 'skinIndex', vvd.attributes.skinIndex );
 
 										// TODO : Winding order seems incorrect causing normals to face the wrong direction
 										// the and faces to be inverted
