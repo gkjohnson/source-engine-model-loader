@@ -6,7 +6,7 @@
   "scripts": {
     "start": "concurrently \"npm run parcel\" \"static-server\"",
     "parcel": "parcel watch ./example/index.html --public-url ./",
-    "build": "parcel build ./example/index.html --public-url ./ --no-cache"
+    "build": "parcel build --no-content-hash ./example/index.html --public-url ./ --no-cache"
   },
   "repository": {
     "type": "git",
