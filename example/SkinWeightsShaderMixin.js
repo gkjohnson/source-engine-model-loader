@@ -20,7 +20,7 @@ export function SkinWeightMixin(shader) {
 		{
 			skinWeightColor: { value: new Color() },
 			skinWeightOpacity: { value: 1.0 },
-			skinWeightIndex: { value: 6 }
+			skinWeightIndex: { value: - 1 }
 		},
 		{
 			[defineKeyword]: 1,
@@ -53,7 +53,7 @@ export function SkinWeightMixin(shader) {
 			/vec4 diffuseColor = vec4\( diffuse, opacity \);/,
 			v => `${v}
 			#ifdef ENABLE_SKIN_WEIGHTS
-				diffuseColor = vec4(skinWeightColor, skinWeightColorRatio * opacity);
+				diffuseColor = vec4( skinWeightColor, smoothstep( 0.1, 0.3, skinWeightColorRatio ) * opacity );
 			#endif
 			`,
 		);

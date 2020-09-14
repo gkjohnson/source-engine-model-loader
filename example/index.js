@@ -4,7 +4,7 @@ import {
 	PerspectiveCamera,
 	Scene,
 	DirectionalLight,
-	AmbientLight,
+	HemisphereLight,
 	Mesh,
 	DoubleSide,
 	Box3,
@@ -17,6 +17,8 @@ import {
 	Vector2,
 	ShaderMaterial,
 	Triangle,
+	PCFSoftShadowMap,
+	Sphere,
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { SourceModelLoader } from '../src/SourceModelLoader.js';
@@ -29,7 +31,8 @@ var stats;
 var params = {
 
 	showSkeleton: false,
-	skin: 0
+	skin: 0,
+	selectParentBoneWithChildren: true,
 
 };
 var camera, scene, renderer, controls;
@@ -46,8 +49,8 @@ skinWeightsMaterial.skinning = true;
 skinWeightsMaterial.transparent = true;
 skinWeightsMaterial.depthWrite = false;
 skinWeightsMaterial.uniforms.skinWeightColor.value.set( 0xe91e63 );
-skinWeightsMaterial.uniforms.emissive.value.set( 0xe91e63 );
-skinWeightsMaterial.uniforms.opacity.value = 0.4;
+skinWeightsMaterial.uniforms.emissive.value.set( 0xe91e63 ).multiplyScalar( 0.5 );
+skinWeightsMaterial.uniforms.opacity.value = 0.75;
 skinWeightsMaterial.uniforms.shininess.value = 0.01;
 
 init();
@@ -59,9 +62,10 @@ function init() {
 	renderer = new WebGLRenderer( { antialias: true } );
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( window.innerWidth, window.innerHeight );
-	renderer.setClearColor( 0x263238 );
+	renderer.setClearColor( 0x0d1113 );
 	renderer.outputEncoding = LinearEncoding;
 	renderer.shadowMap.enabled = true;
+	renderer.shadowMap.type = PCFSoftShadowMap;
 	document.body.appendChild( renderer.domElement );
 
 	// initialize renderer, scene, camera
@@ -70,7 +74,7 @@ function init() {
 
 	scene = new Scene();
 
-	directionalLight = new DirectionalLight();
+	directionalLight = new DirectionalLight( 0xFFF8E1, 1.0 );
 	directionalLight.position.set( 1, 3, -2 ).multiplyScalar( 100 );
 	directionalLight.castShadow = true;
 
@@ -79,7 +83,7 @@ function init() {
 	dlShadowCam.top = dlShadowCam.right = 100;
 	scene.add( directionalLight );
 
-	ambientLight = new AmbientLight( 0xffffff, 0.25 );
+	ambientLight = new HemisphereLight( 0xE0F7FA, 0x8D6E63, 0.45 );
 	scene.add( ambientLight );
 
 	new SourceModelLoader()
@@ -126,7 +130,14 @@ function init() {
 
 				const bb = new Box3();
 				bb.setFromObject( group );
-				bb.getCenter( controls.target );
+
+				const sphere = new Sphere();
+				bb.getBoundingSphere( sphere );
+
+				group.scale.multiplyScalar( 30 / sphere.radius );
+
+				bb.setFromObject( group ).getCenter( group.position ).multiplyScalar( - 1 );
+				bb.setFromObject( group );
 
 				const ground = new Mesh( new PlaneBufferGeometry() );
 				ground.material = new ShadowMaterial( { side: DoubleSide, opacity: 0.5, transparent: true, depthWrite: false } );
@@ -136,18 +147,15 @@ function init() {
 				ground.position.y = bb.min.y;
 				scene.add( ground );
 
-				const box = new Box3();
-				box.setFromObject( group );
-
-				box.getCenter( directionalLight.position );
+				bb.getCenter( directionalLight.position );
 				directionalLight.position.x += 20;
 				directionalLight.position.y += 30;
 				directionalLight.position.z += 20;
 
 				const dim = Math.max(
-					box.max.x - box.min.x,
-					box.max.y - box.min.y,
-					box.max.z - box.min.z,
+					bb.max.x - bb.min.x,
+					bb.max.y - bb.min.y,
+					bb.max.z - bb.min.z,
 				);
 
 				const cam = directionalLight.shadow.camera
@@ -172,7 +180,7 @@ function init() {
 	transformControls = new TransformControls( camera, renderer.domElement );
 	transformControls.mode = 'rotate';
 	transformControls.space = 'local';
-	transformControls.size = 1;
+	transformControls.size = 0.75;
 	transformControls.addEventListener( 'dragging-changed', e => controls.enabled = ! e.value );
 	scene.add( transformControls );
 
@@ -212,9 +220,10 @@ function rebuildGui() {
 
 	// dat gui
 	gui = new dat.GUI();
-	gui.width = 300;
+	gui.width = 400;
 
 	gui.add( params, 'showSkeleton' );
+	gui.add( params, 'selectParentBoneWithChildren' );
 
 	if ( model ) {
 
@@ -252,9 +261,9 @@ const raycastBones = ( function() {
 	const baryCoord = new Vector3();
 	const getFunctions = [ 'getX', 'getY', 'getZ', 'getW' ];
 
-	return function( mousePos ) {
+	return function( mousePos, giveDirectBone = false ) {
 
-		if ( model ) {
+		if ( model && ! transformControls.object ) {
 
 			raycaster.setFromCamera( mousePos, camera );
 
@@ -309,8 +318,19 @@ const raycastBones = ( function() {
 						.map( ( [ key, value ] ) => ( { weight: value, index: key } ) )
 						.sort( ( a, b ) => b.weight - a.weight );
 
-				const boneIndex = sorted[ 0 ].index;
-				const bone = skeleton.bones[ boneIndex ];
+				let boneIndex = sorted[ 0 ].index;
+				let bone = skeleton.bones[ boneIndex ];
+
+				if (
+					params.selectParentBoneWithChildren &&
+					bone.children.length === 0 &&
+					bone.parent.children.length > 1 &&
+					! giveDirectBone
+				) {
+
+					bone = bone.parent;
+
+				}
 
 				skinWeightsMaterial.uniforms.skinWeightIndex.value = boneIndex;
 
@@ -356,10 +376,9 @@ function onMouseDown() {
 
 function onMouseUp( e ) {
 
-	window.transformControls = transformControls
 	if ( mouseDown.distanceTo( mouse ) < 0.001 ) {
 
-		const hitBone = raycastBones( mouse );
+		const hitBone = raycastBones( mouse, e.which !== 1 );
 		if ( hitBone ) {
 
 			// use right click to select tip bone

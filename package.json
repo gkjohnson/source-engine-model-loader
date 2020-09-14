@@ -19,13 +19,13 @@
   },
   "homepage": "https://github.com/gkjohnson/source-engine-model-loader#readme",
   "peerDependencies": {
-    "three": "^0.116.1"
+    "three": "^0.119.0"
   },
   "devDependencies": {
     "concurrently": "^5.2.0",
     "eslint-config-mdcs": "^4.2.3",
     "parcel-bundler": "^1.12.4",
     "static-server": "^2.2.1",
-    "three": "^0.116.1"
+    "three": "^0.119.0"
   }
 }
