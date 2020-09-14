@@ -1,6 +1,6 @@
 # source-engine-model-loader
 
-Three.js loader for parsing Valve's Source Engine models.
+Three.js loader for parsing Valve's Source Engine models built by referencing the data structures in the [ValveSoftware/source-sdk-2013](https://github.com/ValveSoftware/source-sdk-2013) project.
 
 Get models from [SFMLab](https://SFMLab.com).
 
@@ -32,14 +32,14 @@ constructor( manager : LoadingManager )
 ### load
 
 ```js
-load( url : string, onComplete : Function ) : void
+load(
+	url : string,
+	onComplete : ( group : Group ) => void
+) : void
 ```
 
 Loads the set of Source Engine model files at the given path. It is expected that a model with the extensions `.mdl`, `.vvd`, and `.vtx` exist.
 
 # Unimplemented Features
-- Mouths
-- Flex controllers / Morph targets
-- Levels of detail
-- Inverse kinematic chains
-- Animation sequences
+
+See [issue #4](https://github.com/gkjohnson/source-engine-model-loader/issues/4) for full list of unimplemented features.
