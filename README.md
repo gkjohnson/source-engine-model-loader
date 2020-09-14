@@ -32,7 +32,10 @@ constructor( manager : LoadingManager )
 ### load
 
 ```js
-load( url : string, onComplete : Function ) : void
+load(
+	url : string,
+	onComplete : ( group : Group ) => void
+) : void
 ```
 
 Loads the set of Source Engine model files at the given path. It is expected that a model with the extensions `.mdl`, `.vvd`, and `.vtx` exist.
