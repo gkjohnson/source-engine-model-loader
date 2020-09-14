@@ -38,8 +38,5 @@ load( url : string, onComplete : Function ) : void
 Loads the set of Source Engine model files at the given path. It is expected that a model with the extensions `.mdl`, `.vvd`, and `.vtx` exist.
 
 # Unimplemented Features
-- Mouths
-- Flex controllers / Morph targets
-- Levels of detail
-- Inverse kinematic chains
-- Animation sequences
+
+See [issue #4](https://github.com/gkjohnson/source-engine-model-loader/issues/4) for full list of unimplemented features.
