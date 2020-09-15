@@ -40,6 +40,7 @@ var skeletonHelper, model, skeleton, gui;
 var transformControls;
 var mouse = new Vector2();
 var mouseDown = new Vector2();
+var unselectableBones = [];
 
 var SkinWeightShader = SkinWeightMixin( ShaderLib.phong );
 var skinWeightsMaterial = new ShaderMaterial( SkinWeightShader );
@@ -112,6 +113,65 @@ function loadModel( path ) {
 			group => {
 
 				if ( loadingId !== myLoadingId ) return;
+
+				group.traverse( c => {
+
+					if ( c.isSkinnedMesh ) {
+
+						const getFunctions = [ 'getX', 'getY', 'getZ', 'getW' ];
+						const geometry = c.geometry;
+						const skinWeightAttr = geometry.getAttribute( 'skinWeight' );
+						const skinIndexAttr = geometry.getAttribute( 'skinIndex' );
+						const weightMap = [];
+						let overallTotalWeight = 0;
+
+						for ( let i = 0, l = skinWeightAttr.count; i < l; i ++ ) {
+
+							let maxWeight = 0;
+							let maxIndex = - 1
+							for ( let j = 0, jl = skinIndexAttr.itemSize; j < jl; j ++ ) {
+
+								const func = getFunctions[ j ];
+								const weightIndex = skinIndexAttr[ func ]( i );
+								const weight = skinWeightAttr[ func ]( i );
+								if ( weight > maxWeight ) {
+
+									maxWeight = weight;
+									maxIndex = weightIndex;
+
+								}
+
+							}
+
+							let weightInfo = weightMap[ maxIndex ];
+							if ( ! weightInfo ) {
+
+								weightInfo = { totalCount: 0, totalWeight: 0 };
+								weightMap[ maxIndex ] = weightInfo;
+
+							}
+
+							weightInfo.totalCount ++;
+							weightInfo.totalWeight += maxWeight;
+							overallTotalWeight += maxWeight;
+
+						}
+
+						const mappedWeights = weightMap.map( info => info ? info.totalWeight / overallTotalWeight : 0 );
+						for ( let i = 0; i < mappedWeights.length; i ++ ) {
+
+							if ( ! mappedWeights[ i ] ) {
+
+								unselectableBones.push( i );
+
+							}
+
+						}
+
+					}
+
+				} );
+
 
 				skeletonHelper = new SkeletonHelper( group );
 				scene.add( skeletonHelper );
@@ -366,11 +426,13 @@ const raycastBones = ( function() {
 
 				let boneIndex = sorted[ 0 ].index;
 				let bone = skeleton.bones[ boneIndex ];
+				const parentIndex = skeleton.bones.findIndex( b => b === bone.parent );
 
 				// TODO: this should check if the parent bone isn't clickable through any other means
 				// then we should bump to the parent.
 				if (
 					params.selectParentBoneWithChildren &&
+					unselectableBones.includes( parentIndex ) &&
 					bone.children.length === 0 &&
 					bone.parent.children.length > 1 &&
 					! giveDirectBone
