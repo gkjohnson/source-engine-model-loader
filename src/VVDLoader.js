@@ -180,26 +180,36 @@ VVDLoader.prototype = {
 		var fixups = parseFixups( buffer, header.numFixups, header.fixupTableStart );
 
 		// apply fixups
-		const vertexDataStart = header.vertexDataStart;
-		const newBuffer = new ArrayBuffer( header.tangentDataStart - header.vertexDataStart );
-		const newUint8Buffer = new Uint8Array( newBuffer );
-		const ogUint8Buffer = new Uint8Array( buffer );
-		let target = 0;
-		for ( let i = 0; i < fixups.length; i ++ ) {
+		var attributes;
+		var vertArrayLength = header.tangentDataStart - header.vertexDataStart;
+		if ( fixups.length !== 0 ) {
 
-			const fixup = fixups[ i ];
-			memcopy(
-				newUint8Buffer,
-				target * 48,
-				ogUint8Buffer,
-				vertexDataStart + fixup.sourceVertexID * 48,
-				fixup.numVertexes * 48,
-			);
-			target += fixup.numVertexes;
+			const vertexDataStart = header.vertexDataStart;
+			const newBuffer = new ArrayBuffer( vertArrayLength );
+			const newUint8Buffer = new Uint8Array( newBuffer );
+			const ogUint8Buffer = new Uint8Array( buffer );
+			let target = 0;
+			for ( let i = 0; i < fixups.length; i ++ ) {
+
+				const fixup = fixups[ i ];
+				memcopy(
+					newUint8Buffer,
+					target * 48,
+					ogUint8Buffer,
+					vertexDataStart + fixup.sourceVertexID * 48,
+					fixup.numVertexes * 48,
+				);
+				target += fixup.numVertexes;
+
+			}
+
+			attributes = getBufferAttribute( newBuffer, vertArrayLength, 0 );
+
+		} else {
+
+			attributes = getBufferAttribute( buffer, vertArrayLength, header.vertexDataStart );
 
 		}
-
-		var attributes = getBufferAttribute( newBuffer, newBuffer.byteLength, 0 );
 
 		return { header, fixups, attributes, buffer };
 
