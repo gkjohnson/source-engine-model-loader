@@ -233,13 +233,22 @@ VTFLoader.prototype.parse = function ( buffer, loadMipmaps ) {
 
 		}
 
-		var width = header.width >> ( header.mipmapCount - 1 );
-		var height = header.height >> ( header.mipmapCount - 1 );
+		const dimensions = new Array( header.mipmapCount );
+		let currWidth = header.width;
+		let currHeight = header.height;
+		for ( var i = header.mipmapCount - 1; i >= 0; i -- ) {
+
+			dimensions[ i ] = { width: currWidth, height: currHeight };
+			currWidth = ( currWidth >> 1 ) || 1;
+			currHeight = ( currHeight >> 1 ) || 1;
+
+		}
 
 		// smallest to largest
 		var mipmaps = [];
 		for ( var i = 0; i < header.mipmapCount; i ++ ) {
 
+			const { width, height } = dimensions[ i ];
 			var map = getMipMap( buffer, offset, header.highResImageFormat, width, height );
 			mipmaps.push( map );
 			offset += map.data.length;
@@ -250,10 +259,6 @@ VTFLoader.prototype.parse = function ( buffer, loadMipmaps ) {
 		}
 
 		mipmaps = mipmaps.reverse();
-
-		// mipmaps = mipmaps.filter( m => m.width > 500 );
-
-		// mipmaps = [ mipmaps[ 0 ] ];
 
 		return {
 
