@@ -544,8 +544,8 @@ MDLLoader.prototype = {
 
 				var offset = header.includemodelindex + i * 8;
 				var model = {};
-				model.label = readString( dataView, dataView.getInt32( offset + 0, true ) );
-				model.name = readString( dataView, dataView.getInt32( offset + 4, true ) );
+				model.label = readString( dataView, offset + dataView.getInt32( offset + 0, true ) );
+				model.name = readString( dataView, offset + dataView.getInt32( offset + 4, true ) );
 				includeModels.push( model );
 
 			}
@@ -556,7 +556,7 @@ MDLLoader.prototype = {
 
 				var offset = header.bodypartindex + i * 16;
 				var bodyPart = {};
-				bodyPart.name = readString( dataView, dataView.getInt32( offset + 0, true ) );
+				bodyPart.name = readString( dataView, offset + dataView.getInt32( offset + 0, true ) );
 				bodyPart.nummodels = dataView.getInt32( offset + 4, true );
 				bodyPart.base = dataView.getInt32( offset + 8, true );
 				bodyPart.modelindex = dataView.getInt32( offset + 12, true );
@@ -568,7 +568,7 @@ MDLLoader.prototype = {
 
 					var offset2 = offset + bodyPart.modelindex + i2 * 148;
 					var model = {};
-					model.name = readString( dataView, offset2 + 0);
+					model.name = readString( dataView, offset2 + 0, 64);
 					model.type = dataView.getInt32( offset2 + 64, true );
 					model.boundingradius = dataView.getFloat32( offset2 + 64 + 4, true );
 
@@ -650,7 +650,7 @@ MDLLoader.prototype = {
 				var offset = header.boneindex + i * 216;
 				var bone = {};
 
-				bone.name = readString( dataView, dataView.getInt32( offset + 0, true ) );
+				bone.name = readString( dataView, offset + dataView.getInt32( offset + 0, true ) );
 				bone.parent = dataView.getInt32( offset + 4, true );
 
 				var bonecontroller = new Array( 6 );
@@ -752,7 +752,7 @@ MDLLoader.prototype = {
 				const offset = header.localanimindex + i * 100;
 
 				animDesc.baseptr = dataView.getInt32( offset, true );
-				animDesc.name = readString( dataView, dataView.getInt32( offset + 4, true ) );
+				animDesc.name = readString( dataView, offset + dataView.getInt32( offset + 4, true ) );
 				animDesc.fps = dataView.getFloat32( offset + 8, true );
 				animDesc.flags = dataView.getInt32( offset + 12, true );
 				animDesc.numframes = dataView.getInt32( offset + 16, true );
@@ -831,8 +831,8 @@ MDLLoader.prototype = {
 				const offset = header.localseqindex + i * 212;
 
 				localSeq.baseptr = dataView.getInt32( offset, true );
-				localSeq.label = readString( dataView, dataView.getInt32( offset + 4, true ) );
-				localSeq.activityName = readString( dataView, dataView.getInt32( offset + 8, true ) );
+				localSeq.label = readString( dataView, offset + dataView.getInt32( offset + 4, true ) );
+				localSeq.activityName = readString( dataView, offset + dataView.getInt32( offset + 8, true ) );
 
 				localSeq.flags = dataView.getInt32( offset + 12, true );
 				localSeq.activity = dataView.getInt32( offset + 16, true );

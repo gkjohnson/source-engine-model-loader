@@ -144,7 +144,7 @@ VMTLoader.prototype = {
 					break;
 				case '$phongexponenttexture':
 					// TODO: This doesn't quite map appropriately to a specular map
-					material.specularMap = vtfLoader.load( addExt( `${ path }${ field }`, '.vtf' ) );
+					material.specularMap = vtfLoader.load( addExt( `${ path }${ field }`, 'vtf' ) );
 					material.specularMap.wrapS = RepeatWrapping;
 					material.specularMap.wrapT = RepeatWrapping;
 					break;
