@@ -13,17 +13,15 @@ import { VMTLoader } from './VMTLoader.js';
 import { VTXLoader } from './VTXLoader.js';
 import { VVDLoader } from './VVDLoader.js';
 
-const SourceModelLoader = function ( manager ) {
+class SourceModelLoader {
 
-	this.manager = ( manager !== undefined ) ? manager : DefaultLoadingManager;
+	constructor ( manager ) {
 
-};
+		this.manager = ( manager !== undefined ) ? manager : DefaultLoadingManager;
 
-SourceModelLoader.prototype = {
+	}
 
-	constructor: SourceModelLoader,
-
-	load: function ( url, onLoad, onProgress, onError ) {
+	load( url, onLoad, onProgress, onError ) {
 
 		function reverseInPlace( array ) {
 
@@ -87,10 +85,9 @@ SourceModelLoader.prototype = {
 
 				const promises = [];
 				const vmtLoader = new VMTLoader( this.manager );
-				const tokens = url.split( 'models' );
+				const tokens = url.split( '/models/' );
 				tokens.pop();
-
-				const path = tokens.join( 'models' ) + 'materials/';
+				const path = tokens.join( '/models/' ) + '/materials/';
 				mdl.textures.forEach( t => {
 
 					const matPromises = [];
@@ -261,6 +258,6 @@ SourceModelLoader.prototype = {
 
 	}
 
-};
+}
 
 export { SourceModelLoader };

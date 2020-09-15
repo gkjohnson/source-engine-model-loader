@@ -61,4 +61,5 @@ typings/
 .next
 
 local-models/*
+source-engine-model-loader-models
 .cache

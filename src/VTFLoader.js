@@ -144,8 +144,13 @@ VTFLoader.prototype.parse = function ( buffer, loadMipmaps ) {
 
 		switch ( format ) {
 
+			case 0: // RGBA8888
+				var dataLength = width * height * 4;
+				byteArray = new Uint8Array( buffer, offset, dataLength );
+				threeFormat = RGBAFormat;
+				break;
 			case 1: // ABGR8888
-				var dataLength = width * height * 3;
+				var dataLength = width * height * 4;
 				byteArray = new Uint8Array( buffer, offset, dataLength );
 
 				for ( var i = 0, l = byteArray.length; i < l; i += 4 ) {
@@ -161,6 +166,11 @@ VTFLoader.prototype.parse = function ( buffer, loadMipmaps ) {
 
 				}
 				threeFormat = RGBAFormat;
+				break;
+			case 2: // RGB888
+				var dataLength = width * height * 3;
+				byteArray = new Uint8Array( buffer, offset, dataLength );
+				threeFormat = RGBFormat;
 				break;
 			case 3: // BGR888
 				var dataLength = width * height * 3;
