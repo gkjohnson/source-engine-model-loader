@@ -6,6 +6,10 @@ Get models from [SFMLab](https://SFMLab.com).
 
 Demo [here!](https://gkjohnson.github.io/source-engine-model-loader/dist/index.html)
 
+# Lincense Information
+
+Models in this repo are not covered by the code license and copyright their respective owners and are for demo purposes only.
+
 # Use
 
 ```js
