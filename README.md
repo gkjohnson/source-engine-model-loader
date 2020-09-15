@@ -8,7 +8,7 @@ Demo [here!](https://gkjohnson.github.io/source-engine-model-loader/dist/index.h
 
 # Lincense Information
 
-Models in this repo are not covered by the code license and copyright their respective owners and are for demo purposes only.
+Models shown in this repo are not covered by the code license and copyright their respective owners and are for demo purposes only.
 
 # Use
 
