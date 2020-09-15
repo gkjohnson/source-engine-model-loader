@@ -9,6 +9,14 @@ import { VTFLoader } from './VTFLoader.js';
 
 // VMT: https://developer.valvesoftware.com/wiki/VMT
 
+function addExt( path, ext ) {
+
+	const re = new RegExp( `.${ ext }$`, 'i' );
+	if ( re.test( path ) ) return path;
+	else return `${ path }.${ ext }`;
+
+}
+
 const VMTLoader = function ( manager ) {
 
 	this.manager = ( manager !== undefined ) ? manager : DefaultLoadingManager;
@@ -123,20 +131,20 @@ VMTLoader.prototype = {
 			switch ( key.toLowerCase() ) {
 
 				case '$basetexture':
-					material.map = vtfLoader.load( `${ path }${ field }.vtf` );
+					material.map = vtfLoader.load( addExt( `${ path }${ field }`, 'vtf' ) );
 					material.map.wrapS = RepeatWrapping;
 					material.map.wrapT = RepeatWrapping;
 					material.map.encoding = LinearEncoding;
 					break;
 				case '$bumpmap':
 					// TODO: This doesn't seem to quite map correctly to normal map
-					// material.normalMap = vtfLoader.load( `${ path }${ field }.vtf` );
+					// material.normalMap = vtfLoader.load( addExt( `${ path }${ field }`, '.vtf' ) );
 					// material.normalMap.wrapS = RepeatWrapping;
 					// material.normalMap.wrapT = RepeatWrapping;
 					break;
 				case '$phongexponenttexture':
 					// TODO: This doesn't quite map appropriately to a specular map
-					material.specularMap = vtfLoader.load( `${ path }${ field }.vtf` );
+					material.specularMap = vtfLoader.load( addExt( `${ path }${ field }`, '.vtf' ) );
 					material.specularMap.wrapS = RepeatWrapping;
 					material.specularMap.wrapT = RepeatWrapping;
 					break;
