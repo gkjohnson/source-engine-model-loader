@@ -275,7 +275,7 @@ VTFLoader.prototype.parse = function ( buffer, loadMipmaps ) {
 VTFLoader.prototype.load = function ( ...args ) {
 
 	const tex = CompressedTextureLoader.prototype.load.call( this, ...args );
-	tex.minFilter = LinearMipmapLinearFilter;
+	tex.minFilter = LinearFilter;
 	tex.magFilter = LinearFilter;
 	return tex;
 

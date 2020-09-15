@@ -25,7 +25,6 @@ import { SourceModelLoader } from '../src/SourceModelLoader.js';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 import { SkinWeightMixin } from './SkinWeightsShaderMixin.js';
 
-
 // globals
 var stats;
 var params = {
@@ -36,7 +35,7 @@ var params = {
 
 };
 var camera, scene, renderer, controls;
-var directionalLight, ambientLight;
+var directionalLight, ambientLight, ground;
 var skeletonHelper, model, skeleton, gui;
 var transformControls;
 var mouse = new Vector2();
@@ -53,9 +52,120 @@ skinWeightsMaterial.uniforms.emissive.value.set( 0xe91e63 ).multiplyScalar( 0.5 
 skinWeightsMaterial.uniforms.opacity.value = 0.75;
 skinWeightsMaterial.uniforms.shininess.value = 0.01;
 
+let loadingId = 0;
+
 init();
 rebuildGui();
 animate();
+
+function loadModel( path ) {
+
+	if ( model ) {
+
+		model.traverse( c => {
+
+			if ( c.material ) {
+
+				c.material.dispose();
+				for( const key in c.material ) {
+
+					if ( c.material[ key ] && c.material[ key ].isTexture ) {
+
+						c.material[ key ].dispose();
+
+					}
+
+				}
+
+			}
+
+			if ( c.geometry ) {
+
+				c.geometry.dispose();
+
+			}
+
+			if ( c.skeleton ) {
+
+				c.skeleton.dispose();
+
+			}
+
+		} );
+		model.parent.remove( model );
+		skeletonHelper.parent.remove( skeletonHelper );
+
+		model = null;
+		skeletonHelper = null;
+		skeleton = null;
+
+	}
+
+	params.model = path;
+
+	loadingId++;
+	const myLoadingId = loadingId;
+
+	new SourceModelLoader()
+		.load(
+			path,
+			group => {
+
+				console.log( loadingId, myLoadingId )
+				if ( loadingId !== myLoadingId ) return;
+
+				skeletonHelper = new SkeletonHelper( group );
+				scene.add( skeletonHelper );
+				scene.add( group );
+				group.rotation.x = -Math.PI / 2;
+				group.traverse(c => {
+
+					if (c.isMesh) {
+						c.castShadow = true;
+						c.receiveShadow = true;
+					}
+
+					if (c.isSkinnedMesh) {
+						skeleton = c.skeleton;
+					}
+
+				});
+
+				const bb = new Box3();
+				bb.setFromObject( group );
+
+				const sphere = new Sphere();
+				bb.getBoundingSphere( sphere );
+
+				group.scale.multiplyScalar( 30 / sphere.radius );
+
+				bb.setFromObject( group ).getCenter( group.position ).multiplyScalar( - 1 );
+				bb.setFromObject( group );
+
+				bb.getCenter( directionalLight.position );
+				directionalLight.position.x += 20;
+				directionalLight.position.y += 30;
+				directionalLight.position.z += 20;
+
+				ground.position.y = bb.min.y;
+
+				const dim = Math.max(
+					bb.max.x - bb.min.x,
+					bb.max.y - bb.min.y,
+					bb.max.z - bb.min.z,
+				);
+
+				const cam = directionalLight.shadow.camera
+				cam.left = cam.bottom = - dim / 2;
+				cam.right = cam.top = dim / 2;
+				cam.updateProjectionMatrix();
+
+				model = group;
+				rebuildGui();
+
+			} );
+
+}
 
 function init() {
 
@@ -86,87 +196,14 @@ function init() {
 	ambientLight = new HemisphereLight( 0xE0F7FA, 0x8D6E63, 0.45 );
 	scene.add( ambientLight );
 
-	new SourceModelLoader()
-		.load(
-			'../models/shrek/models/shrekgame/shrek',
-			// '../models/VTOL/models/kss/mirrorsedgecatalyst/vtol/kss_vtol',
-			// '../models/NierPOD/models/cold/male/NIERPOD/NIERPOD',
-			// '../models/neopolitan/models/rwby/Neopolitan/neopolitan',
-			// '../models/boxing-gloves/models/grey/props/held/boxing_glove_l',
-			// '../models/advanced_suits_ds2/models/deadspacesuits/isaacadvancedsuit',
-			// '../models/im_822_handheld_ore_cutter_line_gun/models/deadspaceweapons/line_gun',
-			// '../models/heart/models/Tahlian/Valentine/Gift/gift',
-			// '../models/Link_-_Hyrule_Warriors_IpV1rRa/models/hyrulewarriors/link_classic',
-			// '../models/Link_-_Hyrule_Warriors_IpV1rRa/models/hyrulewarriors/link_ball_and_chain_lvl3',
-			// '../models/earthgovgunship_ds2_sfm/models/_maz_ter_/deadspace/deadspacescenery/earthgovgunship',
-			// '../models/MGSBox/models/Cytreath/Models/mgsbox',
-			// '../models/polanball/models/mrpounder/polanball/countryball',
-			// '../models/studio_backdrop_sfm/models/photoshoot/background',
-			// '../models/elderwand/models/hbn/harrypotter/elderwand/elderwand',
-			// '../models/bioshock/models/Sr-Zodiac/bioshock2/eleanorlamb/eleanor_lamb',
+	ground = new Mesh( new PlaneBufferGeometry() );
+	ground.material = new ShadowMaterial( { side: DoubleSide, opacity: 0.5, transparent: true, depthWrite: false } );
+	ground.receiveShadow = true;
+	ground.scale.multiplyScalar( 1000 );
+	ground.rotation.x = -Math.PI / 2;
+	scene.add( ground );
 
-
-			// '../models/Overwatch/Overwatch/models/overwatch/characters/hanzo_default',
-			// '../models/Overwatch/Overwatch/models/overwatch/characters/torbjorn_default',
-
-
-			group => {
-				skeletonHelper = new SkeletonHelper( group );
-				scene.add( skeletonHelper );
-				scene.add( group );
-				group.rotation.x = -Math.PI / 2;
-				group.traverse(c => {
-
-					if (c.isMesh) {
-						c.castShadow = true;
-						c.receiveShadow = true;
-					}
-
-					if (c.isSkinnedMesh) {
-						skeleton = c.skeleton;
-					}
-
-				});
-
-				const bb = new Box3();
-				bb.setFromObject( group );
-
-				const sphere = new Sphere();
-				bb.getBoundingSphere( sphere );
-
-				group.scale.multiplyScalar( 30 / sphere.radius );
-
-				bb.setFromObject( group ).getCenter( group.position ).multiplyScalar( - 1 );
-				bb.setFromObject( group );
-
-				const ground = new Mesh( new PlaneBufferGeometry() );
-				ground.material = new ShadowMaterial( { side: DoubleSide, opacity: 0.5, transparent: true, depthWrite: false } );
-				ground.receiveShadow = true;
-				ground.scale.multiplyScalar( 1000 );
-				ground.rotation.x = -Math.PI / 2;
-				ground.position.y = bb.min.y;
-				scene.add( ground );
-
-				bb.getCenter( directionalLight.position );
-				directionalLight.position.x += 20;
-				directionalLight.position.y += 30;
-				directionalLight.position.z += 20;
-
-				const dim = Math.max(
-					bb.max.x - bb.min.x,
-					bb.max.y - bb.min.y,
-					bb.max.z - bb.min.z,
-				);
-
-				const cam = directionalLight.shadow.camera
-				cam.left = cam.bottom = - dim / 2;
-				cam.right = cam.top = dim / 2;
-				cam.updateProjectionMatrix();
-
-				model = group;
-				rebuildGui();
-
-			} );
+	loadModel( '../models/Shrek/models/shrekgame/shrek' );
 
 	// stats
 	stats = new Stats();
@@ -221,6 +258,17 @@ function rebuildGui() {
 	// dat gui
 	gui = new dat.GUI();
 	gui.width = 400;
+
+	// gui.add( params, 'model', {
+
+	// 	Shrek: '../source-engine-model-loader-models/models/Shrek/models/shrekgame/shrek',
+	// 	Roadhog: '../source-engine-model-loader-models/models/Roadhog/models/Overwatch/characters/Roadhog/roadhog',
+	// 	Tuktuk: '../source-engine-model-loader-models/models/Tuktuk/models/Minitiv/PUBG/vhl/tuktuktuk',
+
+	// 	Yooka: '../source-engine-model-loader-models/models/Yooka/models/JawSFM/Yooka-Laylee/Characters/yooka',
+	// 	Laylee: '../source-engine-model-loader-models/models/Yooka/models/JawSFM/Yooka-Laylee/Characters/laylee',
+
+	// } ).onChange( loadModel );
 
 	gui.add( params, 'showSkeleton' );
 	gui.add( params, 'selectParentBoneWithChildren' );
@@ -321,6 +369,8 @@ const raycastBones = ( function() {
 				let boneIndex = sorted[ 0 ].index;
 				let bone = skeleton.bones[ boneIndex ];
 
+				// TODO: this should check if the parent bone isn't clickable through any other means
+				// then we should bump to the parent.
 				if (
 					params.selectParentBoneWithChildren &&
 					bone.children.length === 0 &&
