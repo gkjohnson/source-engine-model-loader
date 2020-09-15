@@ -118,6 +118,7 @@ function loadModel( path ) {
 
 					if ( c.isSkinnedMesh ) {
 
+						// Find the bone indices that are unreferenced in the model
 						const getFunctions = [ 'getX', 'getY', 'getZ', 'getW' ];
 						const geometry = c.geometry;
 						const skinWeightAttr = geometry.getAttribute( 'skinWeight' );
@@ -172,7 +173,8 @@ function loadModel( path ) {
 
 				} );
 
-
+				// TODO: update the skin bounding boxes (after the ground is positioned) to be infinitely
+				// large so raycasting will continue to work.
 				skeletonHelper = new SkeletonHelper( group );
 				scene.add( skeletonHelper );
 				scene.add( group );
