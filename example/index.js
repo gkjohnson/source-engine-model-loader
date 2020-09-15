@@ -261,7 +261,7 @@ function init() {
 	ground.rotation.x = -Math.PI / 2;
 	scene.add( ground );
 
-	loadModel( '../models/Shrek/models/shrekgame/shrek' );
+	loadModel( '../source-engine-model-loader-models/models/portal2/models/player/ballbot/ballbot' );
 
 	// stats
 	stats = new Stats();
@@ -317,16 +317,23 @@ function rebuildGui() {
 	gui = new dat.GUI();
 	gui.width = 400;
 
-	// gui.add( params, 'model', {
+	gui.add( params, 'model', {
 
-	// 	Shrek: '../source-engine-model-loader-models/models/Shrek/models/shrekgame/shrek',
-	// 	Roadhog: '../source-engine-model-loader-models/models/Roadhog/models/Overwatch/characters/Roadhog/roadhog',
-	// 	Tuktuk: '../source-engine-model-loader-models/models/Tuktuk/models/Minitiv/PUBG/vhl/tuktuktuk',
+		Atlas: '../source-engine-model-loader-models/models/portal2/models/player/ballbot/ballbot',
+		PBody: '../source-engine-model-loader-models/models/portal2/models/player/eggbot/eggbot',
+		Turret: '../source-engine-model-loader-models/models/portal2/models/npcs/turret/turret',
 
-	// 	Yooka: '../source-engine-model-loader-models/models/Yooka/models/JawSFM/Yooka-Laylee/Characters/yooka',
-	// 	Laylee: '../source-engine-model-loader-models/models/Yooka/models/JawSFM/Yooka-Laylee/Characters/laylee',
+		Engineer: '../source-engine-model-loader-models/models/tf/models/player/engineer',
+		Pyro: '../source-engine-model-loader-models/models/tf/models/player/pyro',
+		Spy: '../source-engine-model-loader-models/models/tf/models/player/spy',
+		Demoman: '../source-engine-model-loader-models/models/tf/models/player/demo',
+		Heavy: '../source-engine-model-loader-models/models/tf/models/player/heavy',
+		Medic: '../source-engine-model-loader-models/models/tf/models/player/medic',
+		Scout: '../source-engine-model-loader-models/models/tf/models/player/scout',
+		Sniper: '../source-engine-model-loader-models/models/tf/models/player/sniper',
+		Soldier: '../source-engine-model-loader-models/models/tf/models/player/soldier',
 
-	// } ).onChange( loadModel );
+	} ).onChange( loadModel );
 
 	gui.add( params, 'showSkeleton' );
 	gui.add( params, 'selectParentBoneWithChildren' );

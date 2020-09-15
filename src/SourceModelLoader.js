@@ -7,6 +7,7 @@ import {
 	BufferGeometry,
 	SkinnedMesh,
 	TriangleStripDrawMode,
+	MeshPhongMaterial,
 } from 'three';
 import { MDLLoader } from './MDLLoader.js';
 import { VMTLoader } from './VMTLoader.js';
@@ -108,7 +109,7 @@ class SourceModelLoader {
 
 					} );
 
-					promises.push( Promise.all( matPromises ).then( materials => materials.filter( m => ! ! m )[ 0 ] ) );
+					promises.push( Promise.all( matPromises ).then( materials => materials.filter( m => ! ! m )[ 0 ] || new MeshPhongMaterial() ) );
 
 				} );
 
@@ -165,6 +166,7 @@ class SourceModelLoader {
 				const skeleton = new Skeleton( bones );
 				group.updateMatrixWorld( true );
 
+				// TODO: make groups for body parts and models and apply names
 				vtx.bodyParts.forEach( ( vtxBodyPart, i ) => {
 
 					var mdlBodyPart = mdl.bodyParts[ i ];

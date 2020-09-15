@@ -329,6 +329,8 @@ MDLLoader.prototype = {
 			var animblockindex = dataView.getInt32( i, true );
 			i += 4;
 
+			// TODO: load anim blocks
+
 			// mutable void *animblockModel;
 			i += 4;
 
@@ -778,6 +780,7 @@ MDLLoader.prototype = {
 					movement.vector.y = dataView.getFloat32( offset2 + 24, true );
 					movement.vector.z = dataView.getFloat32( offset2 + 28, true );
 
+					movement.position = {};
 					movement.position.x = dataView.getFloat32( offset2 + 32, true );
 					movement.position.y = dataView.getFloat32( offset2 + 36, true );
 					movement.position.z = dataView.getFloat32( offset2 + 40, true );
