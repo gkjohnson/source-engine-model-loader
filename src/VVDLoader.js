@@ -9,6 +9,16 @@ import {
 
 // VVD: https://developer.valvesoftware.com/wiki/VVD
 
+function memcopy( dst, dstStart, src, srcStart, len ) {
+
+	for ( let i = 0; i < len; i ++ ) {
+
+		dst[ dstStart + i ] = src[ srcStart + i ];
+
+	}
+
+}
+
 const VVDLoader = function ( manager ) {
 
 	this.manager = ( manager !== undefined ) ? manager : DefaultLoadingManager;
@@ -123,12 +133,11 @@ VVDLoader.prototype = {
 
 		}
 
-		function getBufferAttribute( buffer, header ) {
+		function getBufferAttribute( buffer, len, start ) {
 
-			var len = header.tangentDataStart - header.vertexDataStart;
-			var interleavedFloat32Array = new Float32Array( buffer, header.vertexDataStart, len / 4 );
+			var interleavedFloat32Array = new Float32Array( buffer, start, len / 4 );
 			var interleavedFloat32Buffer = new InterleavedBuffer( interleavedFloat32Array, 48 / 4 );
-			var interleavedUint8Array = new Uint8Array( buffer, header.vertexDataStart, len );
+			var interleavedUint8Array = new Uint8Array( buffer, start, len );
 			var interleavedUint8Buffer = new InterleavedBuffer( interleavedUint8Array, 48 );
 
 			// VVD file describes three bone weights and indices while THREE.js requires four
@@ -169,7 +178,28 @@ VVDLoader.prototype = {
 
 		var header = parseHeader( buffer );
 		var fixups = parseFixups( buffer, header.numFixups, header.fixupTableStart );
-		var attributes = getBufferAttribute( buffer, header );
+
+		// apply fixups
+		const vertexDataStart = header.vertexDataStart;
+		const newBuffer = new ArrayBuffer( header.tangentDataStart - header.vertexDataStart );
+		const newUint8Buffer = new Uint8Array( newBuffer );
+		const ogUint8Buffer = new Uint8Array( buffer );
+		let target = 0;
+		for ( let i = 0; i < fixups.length; i ++ ) {
+
+			const fixup = fixups[ i ];
+			memcopy(
+				newUint8Buffer,
+				target * 48,
+				ogUint8Buffer,
+				vertexDataStart + fixup.sourceVertexID * 48,
+				fixup.numVertexes * 48,
+			);
+			target += fixup.numVertexes;
+
+		}
+
+		var attributes = getBufferAttribute( newBuffer, newBuffer.byteLength, 0 );
 
 		return { header, fixups, attributes, buffer };
 
