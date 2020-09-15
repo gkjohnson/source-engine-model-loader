@@ -1,6 +1,8 @@
 # source-engine-model-loader
 
-Three.js loader for parsing Valve's Source Engine models built by referencing the data structures in the [ValveSoftware/source-sdk-2013](https://github.com/ValveSoftware/source-sdk-2013) project.
+Three.js loader for parsing Valve's Source Engine models built by referencing the data structures in the [ValveSoftware/source-sdk-2013](https://github.com/ValveSoftware/source-sdk-2013) project and the source engine [wiki](https://developer.valvesoftware.com/wiki/MDL).
+
+![](./images/banner.png)
 
 Get models from [SFMLab](https://SFMLab.com) or [Source Filmmaker](https://store.steampowered.com/app/1840/Source_Filmmaker/).
 

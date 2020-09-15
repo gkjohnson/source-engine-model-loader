@@ -247,6 +247,7 @@ function init() {
 	directionalLight = new DirectionalLight( 0xFFF8E1, 1.0 );
 	directionalLight.position.set( 1, 3, -2 ).multiplyScalar( 100 );
 	directionalLight.castShadow = true;
+	directionalLight.shadow.mapSize.setScalar( 1024 );
 
 	var dlShadowCam = directionalLight.shadow.camera;
 	dlShadowCam.left = dlShadowCam.bottom = -100;
