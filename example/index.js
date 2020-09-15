@@ -111,13 +111,11 @@ function loadModel( path ) {
 			path,
 			group => {
 
-				console.log( loadingId, myLoadingId )
 				if ( loadingId !== myLoadingId ) return;
 
 				skeletonHelper = new SkeletonHelper( group );
 				scene.add( skeletonHelper );
 				scene.add( group );
-				group.rotation.x = -Math.PI / 2;
 				group.traverse(c => {
 
 					if (c.isMesh) {
@@ -137,7 +135,13 @@ function loadModel( path ) {
 				const sphere = new Sphere();
 				bb.getBoundingSphere( sphere );
 
-				group.scale.multiplyScalar( 30 / sphere.radius );
+				group.scale.multiplyScalar( 20 / sphere.radius );
+				const dim = new Vector3().subVectors( bb.max, bb.min );
+				if ( dim.z > dim.y ) {
+
+					group.rotation.x = -Math.PI / 2;
+
+				}
 
 				bb.setFromObject( group ).getCenter( group.position ).multiplyScalar( - 1 );
 				bb.setFromObject( group );
@@ -149,15 +153,9 @@ function loadModel( path ) {
 
 				ground.position.y = bb.min.y;
 
-				const dim = Math.max(
-					bb.max.x - bb.min.x,
-					bb.max.y - bb.min.y,
-					bb.max.z - bb.min.z,
-				);
-
 				const cam = directionalLight.shadow.camera
-				cam.left = cam.bottom = - dim / 2;
-				cam.right = cam.top = dim / 2;
+				cam.left = cam.bottom = - 20;
+				cam.right = cam.top = 20;
 				cam.updateProjectionMatrix();
 
 				model = group;
@@ -180,7 +178,7 @@ function init() {
 
 	// initialize renderer, scene, camera
 	camera = new PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 6000 );
-	camera.position.set( 60, 30, 60 );
+	camera.position.set( 20, 20, 60 );
 
 	scene = new Scene();
 
