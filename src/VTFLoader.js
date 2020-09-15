@@ -6,6 +6,7 @@ import {
 	RGBA_S3TC_DXT3_Format,
 	RGBA_S3TC_DXT5_Format,
 	LinearFilter,
+	LinearMipmapLinearFilter,
 } from 'three';
 
 // VTF: https://developer.valvesoftware.com/wiki/Valve_Texture_Format
@@ -274,7 +275,7 @@ VTFLoader.prototype.parse = function ( buffer, loadMipmaps ) {
 VTFLoader.prototype.load = function ( ...args ) {
 
 	const tex = CompressedTextureLoader.prototype.load.call( this, ...args );
-	tex.minFilter = LinearFilter;
+	tex.minFilter = LinearMipmapLinearFilter;
 	tex.magFilter = LinearFilter;
 	return tex;
 
