@@ -261,7 +261,7 @@ function init() {
 	ground.rotation.x = -Math.PI / 2;
 	scene.add( ground );
 
-	loadModel( '../source-engine-model-loader-models/models/portal2/models/player/ballbot/ballbot' );
+	loadModel( '../../source-engine-model-loader-models/models/portal2/models/player/ballbot/ballbot' );
 
 	// stats
 	stats = new Stats();
@@ -319,19 +319,19 @@ function rebuildGui() {
 
 	gui.add( params, 'model', {
 
-		Atlas: '../source-engine-model-loader-models/models/portal2/models/player/ballbot/ballbot',
-		PBody: '../source-engine-model-loader-models/models/portal2/models/player/eggbot/eggbot',
-		Turret: '../source-engine-model-loader-models/models/portal2/models/npcs/turret/turret',
+		Atlas: '../../source-engine-model-loader-models/models/portal2/models/player/ballbot/ballbot',
+		PBody: '../../source-engine-model-loader-models/models/portal2/models/player/eggbot/eggbot',
+		Turret: '../../source-engine-model-loader-models/models/portal2/models/npcs/turret/turret',
 
-		Engineer: '../source-engine-model-loader-models/models/tf/models/player/engineer',
-		Pyro: '../source-engine-model-loader-models/models/tf/models/player/pyro',
-		Spy: '../source-engine-model-loader-models/models/tf/models/player/spy',
-		Demoman: '../source-engine-model-loader-models/models/tf/models/player/demo',
-		Heavy: '../source-engine-model-loader-models/models/tf/models/player/heavy',
-		Medic: '../source-engine-model-loader-models/models/tf/models/player/medic',
-		Scout: '../source-engine-model-loader-models/models/tf/models/player/scout',
-		Sniper: '../source-engine-model-loader-models/models/tf/models/player/sniper',
-		Soldier: '../source-engine-model-loader-models/models/tf/models/player/soldier',
+		Engineer: '../../source-engine-model-loader-models/models/tf/models/player/engineer',
+		Pyro: '../../source-engine-model-loader-models/models/tf/models/player/pyro',
+		Spy: '../../source-engine-model-loader-models/models/tf/models/player/spy',
+		Demoman: '../../source-engine-model-loader-models/models/tf/models/player/demo',
+		Heavy: '../../source-engine-model-loader-models/models/tf/models/player/heavy',
+		Medic: '../../source-engine-model-loader-models/models/tf/models/player/medic',
+		Scout: '../../source-engine-model-loader-models/models/tf/models/player/scout',
+		Sniper: '../../source-engine-model-loader-models/models/tf/models/player/sniper',
+		Soldier: '../../source-engine-model-loader-models/models/tf/models/player/soldier',
 
 	} ).onChange( loadModel );
 
