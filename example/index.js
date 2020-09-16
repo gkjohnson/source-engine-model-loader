@@ -173,8 +173,6 @@ function loadModel( path ) {
 
 				} );
 
-				// TODO: update the skin bounding boxes (after the ground is positioned) to be infinitely
-				// large so raycasting will continue to work.
 				skeletonHelper = new SkeletonHelper( group );
 				scene.add( skeletonHelper );
 				scene.add( group );
@@ -220,6 +218,20 @@ function loadModel( path ) {
 				cam.right = cam.top = 20;
 				cam.updateProjectionMatrix();
 
+				// Expand the bounding volumes by a ton so that parts can't be dragged outside the
+				// raycast volume.
+				group.traverse( c => {
+				
+					if ( c.isSkinnedMesh ) {
+					
+						c.geometry.boundingBox.min.multiplyScalar( 1000 );
+						c.geometry.boundingBox.max.multiplyScalar( 1000 );
+						c.geometry.boundingSphere.radius *= 1000;
+						
+					}
+					
+				} );
+				
 				model = group;
 				rebuildGui();
 
