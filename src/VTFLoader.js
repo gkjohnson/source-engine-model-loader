@@ -277,11 +277,34 @@ VTFLoader.prototype.parse = function ( buffer, loadMipmaps ) {
 
 };
 
-VTFLoader.prototype.load = function ( ...args ) {
+VTFLoader.prototype.load = function ( url, onComplete, ...rest ) {
 
-	const tex = CompressedTextureLoader.prototype.load.call( this, ...args );
-	tex.minFilter = LinearFilter;
+	const tex = CompressedTextureLoader.prototype.load.call(
+		this,
+		url,
+		tex => {
+
+			// set unpack alignment to 1 if using 3-stride RGB data
+			if ( tex.format === RGBFormat ) {
+
+				tex.unpackAlignment = 1;
+
+			}
+
+			if ( onComplete ) {
+
+				onComplete( tex );
+
+			}
+
+		},
+		...rest
+	);
+
+
+	tex.minFilter = LinearMipmapLinearFilter;
 	tex.magFilter = LinearFilter;
+
 	return tex;
 
 };

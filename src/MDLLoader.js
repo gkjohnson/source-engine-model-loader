@@ -930,6 +930,36 @@ MDLLoader.prototype = {
 
 			}
 
+			// mstudioikchain_t
+			var ikchains = [];
+			for ( let i = 0; i < header.numikchains; i ++ ) {
+
+				const offset = header.ikchainindex + i * 16;
+
+				const ikchain = {};
+				ikchain.name = readString( dataView, offset + dataView.getInt32( offset, true ) );
+				ikchain.linktype = dataView.getInt32( offset + 4, true );
+				ikchain.numlinks = dataView.getInt32( offset + 8, true );
+				ikchain.linkindex = dataView.getInt32( offset + 12, true );
+				ikchain.links = [];
+
+				for ( let j = 0; j < ikchain.numlinks; j ++ ) {
+
+					const linkOffset = offset + ikchain.linkindex + j * 28;
+
+					const link = {};
+					link.bone = dataView.getInt32( linkOffset, true );
+					link.kneeDir = {};
+					link.kneeDir.x = dataView.getFloat32( linkOffset + 4, true );
+					link.kneeDir.y = dataView.getFloat32( linkOffset + 8, true );
+					link.kneeDir.z = dataView.getFloat32( linkOffset + 12, true );
+					ikchain.links.push( link );
+
+				}
+				ikchains.push( ikchain );
+
+			}
+
 			var skinsTable = [];
 			for ( let i = 0; i < header.numskinfamilies; i ++ ) {
 
@@ -957,6 +987,7 @@ MDLLoader.prototype = {
 				animDescriptions,
 				localSequences,
 				skinsTable,
+				ikchains,
 			};
 
 		}
