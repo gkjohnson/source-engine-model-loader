@@ -254,7 +254,7 @@ class SourceModelLoader {
 
 				group.userData.skinsTable = mdl.skinsTable;
 				group.userData.materials = materials;
-				onLoad( group );
+				onLoad( { group, vvd, mdl, vtx, materials } );
 
 			} );
 

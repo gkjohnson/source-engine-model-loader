@@ -110,9 +110,14 @@ function loadModel( path ) {
 	new SourceModelLoader()
 		.load(
 			path,
-			group => {
+			( { group, vvd, vtx, mdl } ) => {
 
 				if ( loadingId !== myLoadingId ) return;
+
+				window.vvd = vvd;
+				window.vtx = vtx;
+				window.mdl = mdl;
+				window.group = group;
 
 				group.traverse( c => {
 
@@ -221,17 +226,20 @@ function loadModel( path ) {
 				// Expand the bounding volumes by a ton so that parts can't be dragged outside the
 				// raycast volume.
 				group.traverse( c => {
-				
+
 					if ( c.isSkinnedMesh ) {
-					
+
+						if ( ! c.geometry.boundingBox ) c.geometry.computeBoundingBox();
 						c.geometry.boundingBox.min.multiplyScalar( 1000 );
 						c.geometry.boundingBox.max.multiplyScalar( 1000 );
+
+						if ( ! c.geometry.boundingSphere ) c.geometry.computeBoundingSphere();
 						c.geometry.boundingSphere.radius *= 1000;
-						
+
 					}
-					
+
 				} );
-				
+
 				model = group;
 				rebuildGui();
 
