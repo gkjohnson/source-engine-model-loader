@@ -41,6 +41,7 @@ var transformControls;
 var mouse = new Vector2();
 var mouseDown = new Vector2();
 var unselectableBones = [];
+var movingControls = false;
 
 var SkinWeightShader = SkinWeightMixin( ShaderLib.phong );
 var skinWeightsMaterial = new ShaderMaterial( SkinWeightShader );
@@ -292,6 +293,8 @@ function init() {
 
 	// camera controls
 	controls = new OrbitControls( camera, renderer.domElement );
+	controls.addEventListener( 'start', () => movingControls = true );
+	controls.addEventListener( 'end', () => movingControls = false );
 	controls.minDistance = 5;
 	controls.maxDistance = 3000;
 
@@ -299,7 +302,12 @@ function init() {
 	transformControls.mode = 'rotate';
 	transformControls.space = 'local';
 	transformControls.size = 0.75;
-	transformControls.addEventListener( 'dragging-changed', e => controls.enabled = ! e.value );
+	transformControls.addEventListener( 'dragging-changed', e => {
+
+		controls.enabled = ! e.value;
+		movingControls = false;
+
+	} );
 	scene.add( transformControls );
 
 	window.addEventListener( 'resize', onWindowResize, false );
@@ -504,7 +512,6 @@ function onMouseMove( event ) {
 
 	mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
 	mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
-	raycastBones( mouse );
 
 }
 
@@ -570,6 +577,12 @@ function render() {
 
 	controls.update();
 	renderer.render( scene, camera );
+
+	if ( ! movingControls && raycastBones ) {
+
+		raycastBones( mouse );
+
+	}
 
 	if ( model ) {
 
