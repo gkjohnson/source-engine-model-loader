@@ -18,7 +18,7 @@ Models shown in this repo are not covered by the code license and copyright thei
 import { SourceModelLoader } from 'source-engine-model-loader';
 
 new SourceModelLoader()
-  .load( './folder/model', group => {
+  .load( './folder/model', ( { group } ) => {
 
     scene.add( group );
 
@@ -40,7 +40,7 @@ constructor( manager : LoadingManager )
 ```js
 load(
 	url : string,
-	onComplete : ( group : Group ) => void
+	onComplete : ( { group : Group } ) => void
 ) : void
 ```
 
