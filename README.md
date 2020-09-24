@@ -8,7 +8,7 @@ Get models from [SFMLab](https://SFMLab.com) or [Source Filmmaker](https://store
 
 Demo [here!](https://gkjohnson.github.io/source-engine-model-loader/dist/index.html)
 
-# Lincense Information
+# License Information
 
 Models shown in this repo are not covered by the code license, copyright their respective owners, and are for demo purposes only.
 
