@@ -514,9 +514,9 @@ MDLLoader.prototype = {
 			const dataView = new DataView( buffer );
 			const textures = [];
 			// struct mstudiotexture_t
-			for ( var i = 0; i < header.numtextures; i ++ ) {
+			for ( let i = 0; i < header.numtextures; i ++ ) {
 
-				var offset = header.textureindex + i * 16 * 4;
+				const offset = header.textureindex + i * 16 * 4;
 				const sznameindex = dataView.getInt32( offset, true );
 				// var flags = dataView.getInt32( offset + 4, true );
 				// var used = dataView.getInt32( offset + 8, true );
@@ -531,9 +531,9 @@ MDLLoader.prototype = {
 			}
 
 			const textureDirectories = [];
-			for ( var i = 0; i < header.numcdtextures; i ++ ) {
+			for ( let i = 0; i < header.numcdtextures; i ++ ) {
 
-				var offset = header.cdtextureindex + i * 4;
+				const offset = header.cdtextureindex + i * 4;
 				const ptr = dataView.getInt32( offset, true );
 				textureDirectories.push( readString( dataView, ptr ) );
 
@@ -541,10 +541,10 @@ MDLLoader.prototype = {
 
 			const includeModels = [];
 			// struct mstudiomodelgroup_t
-			for ( var i = 0; i < header.numincludemodels; i ++ ) {
+			for ( let i = 0; i < header.numincludemodels; i ++ ) {
 
-				var offset = header.includemodelindex + i * 8;
-				var model = {};
+				const offset = header.includemodelindex + i * 8;
+				const model = {};
 				model.label = readString( dataView, offset + dataView.getInt32( offset + 0, true ) );
 				model.name = readString( dataView, offset + dataView.getInt32( offset + 4, true ) );
 				includeModels.push( model );
@@ -553,9 +553,9 @@ MDLLoader.prototype = {
 
 			// struct mstudiobodyparts_t
 			const bodyParts = [];
-			for ( var i = 0; i < header.numbodyparts; i ++ ) {
+			for ( let i = 0; i < header.numbodyparts; i ++ ) {
 
-				var offset = header.bodypartindex + i * 16;
+				const offset = header.bodypartindex + i * 16;
 				const bodyPart = {};
 				bodyPart.name = readString( dataView, offset + dataView.getInt32( offset + 0, true ) );
 				bodyPart.nummodels = dataView.getInt32( offset + 4, true );
@@ -565,10 +565,10 @@ MDLLoader.prototype = {
 				bodyParts.push( bodyPart );
 
 				// struct mstudiomodel_t
-				for ( var i2 = 0; i2 < bodyPart.nummodels; i2 ++ ) {
+				for ( let i2 = 0; i2 < bodyPart.nummodels; i2 ++ ) {
 
 					const offset2 = offset + bodyPart.modelindex + i2 * 148;
-					var model = {};
+					const model = {};
 					model.name = readString( dataView, offset2 + 0, 64 );
 					model.type = dataView.getInt32( offset2 + 64, true );
 					model.boundingradius = dataView.getFloat32( offset2 + 64 + 4, true );
@@ -646,9 +646,9 @@ MDLLoader.prototype = {
 
 			// mstudiobone_t
 			const bones = [];
-			for ( var i = 0; i < header.numbones; i ++ ) {
+			for ( let i = 0; i < header.numbones; i ++ ) {
 
-				var offset = header.boneindex + i * 216;
+				const offset = header.boneindex + i * 216;
 				const bone = {};
 
 				bone.name = readString( dataView, offset + dataView.getInt32( offset + 0, true ) );
@@ -729,7 +729,7 @@ MDLLoader.prototype = {
 			}
 
 			const boneControllers = [];
-			for ( var i = 0; i < header.numbonecontrollers; i ++ ) {
+			for ( let i = 0; i < header.numbonecontrollers; i ++ ) {
 
 				const boneController = {};
 				const offset = header.bonecontrollerindex + i * 56;
@@ -749,7 +749,7 @@ MDLLoader.prototype = {
 
 			const animDescriptions = [];
 			// struct mstudioanimdesc_t
-			for ( var i = 0; i < header.numlocalanim; i ++ ) {
+			for ( let i = 0; i < header.numlocalanim; i ++ ) {
 
 				const animDesc = {};
 				const offset = header.localanimindex + i * 100;
@@ -765,7 +765,7 @@ MDLLoader.prototype = {
 
 				// struct mstudiomovement_t
 				animDesc.movements = [];
-				for ( var i2 = 0; i2 < animDesc.nummovements; i2 ++ ) {
+				for ( let i2 = 0; i2 < animDesc.nummovements; i2 ++ ) {
 
 					const movement = {};
 					const offset2 = offset + animDesc.movementindex + i2 * 44;

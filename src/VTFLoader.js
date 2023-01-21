@@ -44,7 +44,7 @@ VTFLoader.prototype.parse = function ( buffer ) {
 		const dataView = new DataView( buffer );
 		let i = 0;
 		let signature = '';
-		for ( var j = 0; j < 4; j ++ ) {
+		for ( let j = 0; j < 4; j ++ ) {
 
 			signature += String.fromCharCode( dataView.getUint8( i, true ) );
 			i ++;
@@ -76,7 +76,7 @@ VTFLoader.prototype.parse = function ( buffer ) {
 		i += 4;
 
 		const reflectivity = [];
-		for ( var j = 0; j < 3; j ++ ) {
+		for ( let j = 0; j < 3; j ++ ) {
 
 			reflectivity.push( dataView.getFloat32( i, true ) );
 			i += 4;
@@ -143,15 +143,16 @@ VTFLoader.prototype.parse = function ( buffer ) {
 		let threeFormat = null;
 		let byteArray = null;
 
+		let dataLength;
 		switch ( format ) {
 
 		case 0: // RGBA8888
-			var dataLength = width * height * 4;
+			dataLength = width * height * 4;
 			byteArray = new Uint8Array( buffer, offset, dataLength );
 			threeFormat = RGBAFormat;
 			break;
 		case 1: // ABGR8888
-			var dataLength = width * height * 4;
+			dataLength = width * height * 4;
 			byteArray = new Uint8Array( buffer, offset, dataLength );
 
 			for ( let i = 0, l = byteArray.length; i < l; i += 4 ) {
@@ -170,39 +171,39 @@ VTFLoader.prototype.parse = function ( buffer ) {
 			threeFormat = RGBAFormat;
 			break;
 		case 2: // RGB888
-			var dataLength = width * height * 3;
+			dataLength = width * height * 3;
 			byteArray = new Uint8Array( buffer, offset, dataLength );
 			threeFormat = RGBFormat;
 			break;
 		case 3: // BGR888
-			var dataLength = width * height * 3;
+			dataLength = width * height * 3;
 			byteArray = new Uint8Array( buffer, offset, dataLength );
 			bgrToRgb( byteArray, 3 );
 			threeFormat = RGBFormat;
 			break;
 		case 12: // BGRA8888
-			var dataLength = width * height * 4;
+			dataLength = width * height * 4;
 			byteArray = new Uint8Array( buffer, offset, dataLength );
 			bgrToRgb( byteArray, 4 );
 			threeFormat = RGBAFormat;
 			break;
 		case 13: // DXT1
-			var dataLength = dxtSz * 8; // 8 blockBytes
+			dataLength = dxtSz * 8; // 8 blockBytes
 			byteArray = new Uint8Array( buffer, offset, dataLength );
 			threeFormat = RGB_S3TC_DXT1_Format;
 			break;
 		case 14: // DXT3
-			var dataLength = dxtSz * 16; // 16 blockBytes
+			dataLength = dxtSz * 16; // 16 blockBytes
 			byteArray = new Uint8Array( buffer, offset, dataLength );
 			threeFormat = RGBA_S3TC_DXT3_Format;
 			break;
 		case 15: // DXT5
-			var dataLength = dxtSz * 16; // 16 blockBytes
+			dataLength = dxtSz * 16; // 16 blockBytes
 			byteArray = new Uint8Array( buffer, offset, dataLength );
 			threeFormat = RGBA_S3TC_DXT5_Format;
 			break;
 		default:
-			console.error( `VTFLoader: Format variant ${ format } is unsupported.` );
+			console.error( `VTFLoader: Format letiant ${ format } is unsupported.` );
 			return null;
 
 		}
@@ -237,7 +238,7 @@ VTFLoader.prototype.parse = function ( buffer ) {
 		const dimensions = new Array( header.mipmapCount );
 		let currWidth = header.width;
 		let currHeight = header.height;
-		for ( var i = header.mipmapCount - 1; i >= 0; i -- ) {
+		for ( let i = header.mipmapCount - 1; i >= 0; i -- ) {
 
 			dimensions[ i ] = { width: currWidth, height: currHeight };
 			currWidth = ( currWidth >> 1 ) || 1;
@@ -247,7 +248,7 @@ VTFLoader.prototype.parse = function ( buffer ) {
 
 		// smallest to largest
 		let mipmaps = [];
-		for ( var i = 0; i < header.mipmapCount; i ++ ) {
+		for ( let i = 0; i < header.mipmapCount; i ++ ) {
 
 			let { width, height } = dimensions[ i ];
 			const map = getMipMap( buffer, offset, header.highResImageFormat, width, height );

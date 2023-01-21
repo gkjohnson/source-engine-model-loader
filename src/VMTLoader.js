@@ -89,7 +89,9 @@ VMTLoader.prototype = {
 					const tokens = currData.trim().split( /\s+/ );
 					if ( tokens.length >= 2 ) {
 
-						let [ name, contents ] = tokens.map( t => t.replace( /"/g, '' ) );
+						const mapped = tokens.map( t => t.replace( /"/g, '' ) );
+						const name = mapped[ 0 ];
+						let contents = mapped[ 1 ];
 
 						if ( /^\[/.test( contents ) ) {
 
