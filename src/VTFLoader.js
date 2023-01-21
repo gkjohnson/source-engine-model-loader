@@ -249,7 +249,7 @@ VTFLoader.prototype.parse = function ( buffer ) {
 		var mipmaps = [];
 		for ( var i = 0; i < header.mipmapCount; i ++ ) {
 
-			const { width, height } = dimensions[ i ];
+			let { width, height } = dimensions[ i ];
 			var map = getMipMap( buffer, offset, header.highResImageFormat, width, height );
 			mipmaps.push( map );
 			offset += map.data.length;

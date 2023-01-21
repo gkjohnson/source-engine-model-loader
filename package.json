@@ -4,8 +4,7 @@
   "description": "three.js loader for parsing source engine models",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently \"npm run parcel\" \"static-server -f\"",
-    "parcel": "parcel watch ./example/index.html --public-url ./",
+    "start": "cd example && parcel serve ./*.html --dist-dir ../dist/ --no-cache --no-hmr",
     "build": "parcel build --no-content-hash ./example/index.html --public-url ./ --no-cache",
     "lint": "eslint ./src/**.js"
   },
@@ -26,7 +25,7 @@
     "concurrently": "^5.2.0",
     "eslint": "^7.32.0",
     "eslint-config-mdcs": "^5.0.0",
-    "parcel-bundler": "^1.12.4",
+    "parcel": "^2.0.0",
     "static-server": "^2.2.1",
     "three": "^0.119.0"
   }
