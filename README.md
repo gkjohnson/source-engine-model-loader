@@ -1,5 +1,9 @@
 # source-engine-model-loader
 
+[![build](https://img.shields.io/github/actions/workflow/status/gkjohnson/source-engine-model-loader/node.js.yml?style=flat-square&label=build&branch=master)](https://github.com/gkjohnson/source-engine-model-loader/actions)
+[![github](https://flat.badgen.net/badge/icon/github?icon=github&label)](https://github.com/gkjohnson/source-engine-model-loader/)
+[![twitter](https://flat.badgen.net/twitter/follow/garrettkjohnson)](https://twitter.com/garrettkjohnson)
+
 Three.js loader for parsing Valve's Source Engine models built by referencing the data structures in the [ValveSoftware/source-sdk-2013](https://github.com/ValveSoftware/source-sdk-2013) project and the source engine [wiki](https://developer.valvesoftware.com/wiki/MDL). Demo models from the [Source Filmmaker](https://store.steampowered.com/app/1840/Source_Filmmaker/) installation.
 
 ![](./images/banner.png)
