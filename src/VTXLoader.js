@@ -17,9 +17,9 @@ VTXLoader.prototype = {
 
 	load: function ( url, onLoad, onProgress, onError ) {
 
-		var scope = this;
+		const scope = this;
 
-		var loader = new FileLoader( this.manager );
+		const loader = new FileLoader( this.manager );
 		loader.setPath( this.path );
 		loader.setResponseType( 'arraybuffer' );
 		loader.load( url, function ( text ) {
@@ -34,10 +34,10 @@ VTXLoader.prototype = {
 
 		function readString( dataView, offset, count = Infinity ) {
 
-			var str = '';
-			for ( var j = 0; j < count; j ++ ) {
+			let str = '';
+			for ( let j = 0; j < count; j ++ ) {
 
-				var c = dataView.getUint8( j + offset );
+				const c = dataView.getUint8( j + offset );
 				if ( c === 0 ) break;
 
 				str += String.fromCharCode( c );
@@ -51,47 +51,47 @@ VTXLoader.prototype = {
 		// struct FileHeader_t
 		function parseHeader( buffer ) {
 
-			var dataView = new DataView( buffer );
-			var i = 0;
+			const dataView = new DataView( buffer );
+			let i = 0;
 
 			// int
-			var version = dataView.getInt32( i, true );
+			const version = dataView.getInt32( i, true );
 			i += 4;
 
 			// int
-			var vertCacheSize = dataView.getInt32( i, true );
+			const vertCacheSize = dataView.getInt32( i, true );
 			i += 4;
 
 			// short
-			var maxBonesPerStrip = dataView.getUint16( i, true );
+			const maxBonesPerStrip = dataView.getUint16( i, true );
 			i += 2;
 
 			// short
-			var maxBonesPerTri = dataView.getUint16( i, true );
+			const maxBonesPerTri = dataView.getUint16( i, true );
 			i += 2;
 
 			// int
-			var maxBonesPerVert = dataView.getInt32( i, true );
+			const maxBonesPerVert = dataView.getInt32( i, true );
 			i += 4;
 
 			// int
-			var checksum = dataView.getInt32( i, true );
+			const checksum = dataView.getInt32( i, true );
 			i += 4;
 
 			// int
-			var numLODs = dataView.getInt32( i, true );
+			const numLODs = dataView.getInt32( i, true );
 			i += 4;
 
 			// int
-			var materialReplacementListOffset = dataView.getInt32( i, true );
+			const materialReplacementListOffset = dataView.getInt32( i, true );
 			i += 4;
 
 			// int
-			var numBodyParts = dataView.getInt32( i, true );
+			const numBodyParts = dataView.getInt32( i, true );
 			i += 4;
 
 			// int
-			var bodyPartOffset = dataView.getInt32( i, true );
+			const bodyPartOffset = dataView.getInt32( i, true );
 			i += 4;
 
 			return {
@@ -113,16 +113,16 @@ VTXLoader.prototype = {
 		// struct StripHeader_t
 		function parseStrips( buffer, numStrips, stripOffset ) {
 
-			var dataView = new DataView( buffer );
-			var res = [];
+			const dataView = new DataView( buffer );
+			const res = [];
 
-			for ( var i = 0; i < numStrips; i ++ ) {
+			for ( let i = 0; i < numStrips; i ++ ) {
 
 				// TODO: This offset seems to make things work correctly for the ball and chain
 				// but it's unclear why... padding?
 				// var offset = stripOffset + i * 27;
-				var offset = stripOffset + i * 35;
-				var strip = {};
+				const offset = stripOffset + i * 35;
+				const strip = {};
 				strip.numIndices = dataView.getInt32( offset + 0, true );
 				strip.indexOffset = dataView.getInt32( offset + 4, true );
 
@@ -149,15 +149,15 @@ VTXLoader.prototype = {
 		// struct StripGroupHeader_t
 		function parseStripGroups( buffer, numStripGroups, stripGroupHeaderOffset ) {
 
-			var dataView = new DataView( buffer );
-			var res = [];
-			for ( var i = 0; i < numStripGroups; i ++ ) {
+			const dataView = new DataView( buffer );
+			const res = [];
+			for ( let i = 0; i < numStripGroups; i ++ ) {
 
 				// TODO: Looking at the padding offsets in the MGSBox model it looks like
 				// this struct has as stride of 33 but counting up yields 25?
 				// var offset = stripGroupHeaderOffset + i * 25;
-				var offset = stripGroupHeaderOffset + i * 33;
-				var stripGroup = {};
+				const offset = stripGroupHeaderOffset + i * 33;
+				const stripGroup = {};
 				stripGroup.numVerts = dataView.getInt32( offset + 0, true );
 				stripGroup.vertOffset = dataView.getInt32( offset + 4, true );
 
@@ -185,12 +185,12 @@ VTXLoader.prototype = {
 		// struct MeshHeader_t
 		function parseMeshes( buffer, numMeshes, meshOffset ) {
 
-			var dataView = new DataView( buffer );
-			var res = [];
-			for ( var i = 0; i < numMeshes; i ++ ) {
+			const dataView = new DataView( buffer );
+			const res = [];
+			for ( let i = 0; i < numMeshes; i ++ ) {
 
-				var offset = meshOffset + i * 9;
-				var mesh = {};
+				const offset = meshOffset + i * 9;
+				const mesh = {};
 				mesh.numStripGroups = dataView.getInt32( offset + 0, true );
 				mesh.stripGroupHeaderOffset = dataView.getInt32( offset + 4, true );
 				mesh.flags = dataView.getUint8( offset + 8, true );
@@ -206,12 +206,12 @@ VTXLoader.prototype = {
 		// struct ModelLODHeader_t
 		function parseLods( buffer, numLODs, lodOffset ) {
 
-			var dataView = new DataView( buffer );
-			var res = [];
-			for ( var i = 0; i < numLODs; i ++ ) {
+			const dataView = new DataView( buffer );
+			const res = [];
+			for ( let i = 0; i < numLODs; i ++ ) {
 
-				var offset = lodOffset + i * 12;
-				var lod = {};
+				const offset = lodOffset + i * 12;
+				const lod = {};
 				lod.numMeshes = dataView.getInt32( offset + 0, true );
 				lod.meshOffset = dataView.getInt32( offset + 4, true );
 				lod.switchPoint = dataView.getFloat32( offset + 8, true );
@@ -228,12 +228,12 @@ VTXLoader.prototype = {
 		// struct ModelHeader_t
 		function parseModels( buffer, numModels, modelOffset ) {
 
-			var dataView = new DataView( buffer );
-			var res = [];
-			for ( var i = 0; i < numModels; i ++ ) {
+			const dataView = new DataView( buffer );
+			const res = [];
+			for ( let i = 0; i < numModels; i ++ ) {
 
-				var offset = modelOffset + i * 8;
-				var model = {};
+				const offset = modelOffset + i * 8;
+				const model = {};
 				model.numLODs = dataView.getInt32( offset + 0, true );
 				model.lodOffset = dataView.getInt32( offset + 4, true );
 				model.lods = parseLods( buffer, model.numLODs, offset + model.lodOffset );
@@ -249,12 +249,12 @@ VTXLoader.prototype = {
 		// struct BodyPartHeader_t
 		function parseBodyParts( buffer, numBodyParts, bodyPartOffset ) {
 
-			var dataView = new DataView( buffer );
-			var res = [];
-			for ( var i = 0; i < numBodyParts; i ++ ) {
+			const dataView = new DataView( buffer );
+			const res = [];
+			for ( let i = 0; i < numBodyParts; i ++ ) {
 
-				var offset = bodyPartOffset + i * 8;
-				var bodyPart = {};
+				const offset = bodyPartOffset + i * 8;
+				const bodyPart = {};
 				bodyPart.numModels = dataView.getInt32( offset + 0, true );
 				bodyPart.modelOffset = dataView.getInt32( offset + 4, true );
 				bodyPart.models = parseModels( buffer, bodyPart.numModels, offset + bodyPart.modelOffset );
@@ -269,20 +269,20 @@ VTXLoader.prototype = {
 
 		function parseMaterialReplacement( buffer, matReplacementNum, matReplacementOffset ) {
 
-			var dataView = new DataView( buffer );
-			var res = [];
-			for ( var i = 0; i < matReplacementNum; i ++ ) {
+			const dataView = new DataView( buffer );
+			const res = [];
+			for ( let i = 0; i < matReplacementNum; i ++ ) {
 
-				var offset = matReplacementOffset + i * 8;
-				var replaceMaterial = {};
+				const offset = matReplacementOffset + i * 8;
+				const replaceMaterial = {};
 				replaceMaterial.numReplacements = dataView.getInt32( offset + 0, true );
 				replaceMaterial.replacementOffset = dataView.getInt32( offset + 4, true );
 				replaceMaterial.replacements = [];
 
-				for ( var j = 0; j < replaceMaterial.numReplacements; j ++ ) {
+				for ( let j = 0; j < replaceMaterial.numReplacements; j ++ ) {
 
-					var offset2 = replaceMaterial.replacementOffset + i * 6;
-					var replacement = {};
+					const offset2 = replaceMaterial.replacementOffset + i * 6;
+					const replacement = {};
 					replacement.materialID = dataView.getInt16( offset2 + 0, true );
 					replacement.name = readString( dataView, dataView.getInt32( offset2 + 2, true ) );
 
@@ -296,9 +296,9 @@ VTXLoader.prototype = {
 
 		}
 
-		var header = parseHeader( buffer );
-		var bodyParts = parseBodyParts( buffer, header.numBodyParts, header.bodyPartOffset );
-		var materialReplacements = parseMaterialReplacement( buffer, header.numLODs, header.materialReplacementListOffset );
+		const header = parseHeader( buffer );
+		const bodyParts = parseBodyParts( buffer, header.numBodyParts, header.bodyPartOffset );
+		const materialReplacements = parseMaterialReplacement( buffer, header.numLODs, header.materialReplacementListOffset );
 
 		return { header, bodyParts, materialReplacements, buffer };
 

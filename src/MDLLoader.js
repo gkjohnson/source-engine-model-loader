@@ -22,9 +22,9 @@ MDLLoader.prototype = {
 
 	load: function ( url, onLoad, onProgress, onError ) {
 
-		var scope = this;
+		const scope = this;
 
-		var loader = new FileLoader( this.manager );
+		const loader = new FileLoader( this.manager );
 		loader.setPath( this.path );
 		loader.setResponseType( 'arraybuffer' );
 		loader.load( url, function ( text ) {
@@ -39,10 +39,10 @@ MDLLoader.prototype = {
 
 		function readString( dataView, offset, count = Infinity ) {
 
-			var str = '';
-			for ( var j = 0; j < count; j ++ ) {
+			let str = '';
+			for ( let j = 0; j < count; j ++ ) {
 
-				var c = dataView.getUint8( j + offset );
+				const c = dataView.getUint8( j + offset );
 				if ( c === 0 ) break;
 
 				str += String.fromCharCode( c );
@@ -56,276 +56,276 @@ MDLLoader.prototype = {
 		// studiohdr_t
 		function parseHeader( buffer ) {
 
-			var dataView = new DataView( buffer );
-			var i = 0;
+			const dataView = new DataView( buffer );
+			let i = 0;
 
 			// int id;
-			var id = dataView.getInt32( i, true );
+			const id = dataView.getInt32( i, true );
 			i += 4;
 
 			// int version;
-			var version = dataView.getInt32( i, true );
+			const version = dataView.getInt32( i, true );
 			i += 4;
 
 			// int checksum;
-			var checksum = dataView.getInt32( i, true );
+			const checksum = dataView.getInt32( i, true );
 			i += 4;
 
 			// char name[64];
-			var name = readString( dataView, i, 64 );
+			const name = readString( dataView, i, 64 );
 			i += 64;
 
 			// int length;
-			var length = dataView.getInt32( i, true );
+			const length = dataView.getInt32( i, true );
 			i += 4;
 
 			// Vector eyeposition;
-			var eyeposition = new Vector3();
+			const eyeposition = new Vector3();
 			eyeposition.x = dataView.getFloat32( i + 0, true );
 			eyeposition.y = dataView.getFloat32( i + 4, true );
 			eyeposition.z = dataView.getFloat32( i + 8, true );
 			i += 12;
 
 			// Vector illumposition;
-			var illumposition = new Vector3();
+			const illumposition = new Vector3();
 			illumposition.x = dataView.getFloat32( i + 0, true );
 			illumposition.y = dataView.getFloat32( i + 4, true );
 			illumposition.z = dataView.getFloat32( i + 8, true );
 			i += 12;
 
 			// Vector hull_min;
-			var hullMin = new Vector3();
+			const hullMin = new Vector3();
 			hullMin.x = dataView.getFloat32( i + 0, true );
 			hullMin.y = dataView.getFloat32( i + 4, true );
 			hullMin.z = dataView.getFloat32( i + 8, true );
 			i += 12;
 
 			// Vector hull_max;
-			var hullMax = new Vector3();
+			const hullMax = new Vector3();
 			hullMax.x = dataView.getFloat32( i + 0, true );
 			hullMax.y = dataView.getFloat32( i + 4, true );
 			hullMax.z = dataView.getFloat32( i + 8, true );
 			i += 12;
 
 			// Vector view_bbmin;
-			var viewBbmin = new Vector3();
+			const viewBbmin = new Vector3();
 			viewBbmin.x = dataView.getFloat32( i + 0, true );
 			viewBbmin.y = dataView.getFloat32( i + 4, true );
 			viewBbmin.z = dataView.getFloat32( i + 8, true );
 			i += 12;
 
 			// Vector view_bbmax;
-			var viewBbmax = new Vector3();
+			const viewBbmax = new Vector3();
 			viewBbmax.x = dataView.getFloat32( i + 0, true );
 			viewBbmax.y = dataView.getFloat32( i + 4, true );
 			viewBbmax.z = dataView.getFloat32( i + 8, true );
 			i += 12;
 
 			// int flags;
-			var flags = dataView.getInt32( i, true );
+			const flags = dataView.getInt32( i, true );
 			i += 4;
 
 			// int numbones;
-			var numbones = dataView.getInt32( i, true );
+			const numbones = dataView.getInt32( i, true );
 			i += 4;
 
 			// int boneindex;
-			var boneindex = dataView.getInt32( i, true );
+			const boneindex = dataView.getInt32( i, true );
 			i += 4;
 
 			// int numbonecontrollers;
-			var numbonecontrollers = dataView.getInt32( i, true );
+			const numbonecontrollers = dataView.getInt32( i, true );
 			i += 4;
 
 			// int bonecontrollerindex;
-			var bonecontrollerindex = dataView.getInt32( i, true );
+			const bonecontrollerindex = dataView.getInt32( i, true );
 			i += 4;
 
 			// int numhitboxsets;
-			var numhitboxsets = dataView.getInt32( i, true );
+			const numhitboxsets = dataView.getInt32( i, true );
 			i += 4;
 
 			// int hitboxsetindex;
-			var hitboxsetindex = dataView.getInt32( i, true );
+			const hitboxsetindex = dataView.getInt32( i, true );
 			i += 4;
 
 			// int numlocalanim;
-			var numlocalanim = dataView.getInt32( i, true );
+			const numlocalanim = dataView.getInt32( i, true );
 			i += 4;
 
 			// int localanimindex;
-			var localanimindex = dataView.getInt32( i, true );
+			const localanimindex = dataView.getInt32( i, true );
 			i += 4;
 
 			// int numlocalseq;
-			var numlocalseq = dataView.getInt32( i, true );
+			const numlocalseq = dataView.getInt32( i, true );
 			i += 4;
 
 			// int localseqindex;
-			var localseqindex = dataView.getInt32( i, true );
+			const localseqindex = dataView.getInt32( i, true );
 			i += 4;
 
 			// mutable int activitylistversion;
-			var activitylistversion = dataView.getInt32( i, true );
+			const activitylistversion = dataView.getInt32( i, true );
 			i += 4;
 
 			// mutable int eventsindexed;
-			var eventsindexed = dataView.getInt32( i, true );
+			const eventsindexed = dataView.getInt32( i, true );
 			i += 4;
 
 			// int numtextures;
-			var numtextures = dataView.getInt32( i, true );
+			const numtextures = dataView.getInt32( i, true );
 			i += 4;
 
 			// int textureindex;
-			var textureindex = dataView.getInt32( i, true );
+			const textureindex = dataView.getInt32( i, true );
 			i += 4;
 
 			// int numcdtextures;
-			var numcdtextures = dataView.getInt32( i, true );
+			const numcdtextures = dataView.getInt32( i, true );
 			i += 4;
 
 			// int cdtextureindex;
-			var cdtextureindex = dataView.getInt32( i, true );
+			const cdtextureindex = dataView.getInt32( i, true );
 			i += 4;
 
 			// int numskinref;
-			var numskinref = dataView.getInt32( i, true );
+			const numskinref = dataView.getInt32( i, true );
 			i += 4;
 
 			// int numskinfamilies;
-			var numskinfamilies = dataView.getInt32( i, true );
+			const numskinfamilies = dataView.getInt32( i, true );
 			i += 4;
 
 			// int skinindex;
-			var skinindex = dataView.getInt32( i, true );
+			const skinindex = dataView.getInt32( i, true );
 			i += 4;
 
 			// int numbodyparts;
-			var numbodyparts = dataView.getInt32( i, true );
+			const numbodyparts = dataView.getInt32( i, true );
 			i += 4;
 
 			// int bodypartindex;
-			var bodypartindex = dataView.getInt32( i, true );
+			const bodypartindex = dataView.getInt32( i, true );
 			i += 4;
 
 			// int numlocalattachments;
-			var numlocalattachments = dataView.getInt32( i, true );
+			const numlocalattachments = dataView.getInt32( i, true );
 			i += 4;
 
 			// int localattachmentindex;
-			var localattachmentindex = dataView.getInt32( i, true );
+			const localattachmentindex = dataView.getInt32( i, true );
 			i += 4;
 
 			// int numlocalnodes;
-			var numlocalnodes = dataView.getInt32( i, true );
+			const numlocalnodes = dataView.getInt32( i, true );
 			i += 4;
 
 			// int localnodeindex;
-			var localnodeindex = dataView.getInt32( i, true );
+			const localnodeindex = dataView.getInt32( i, true );
 			i += 4;
 
 			// int localnodenameindex;
-			var localnodenameindex = dataView.getInt32( i, true );
+			const localnodenameindex = dataView.getInt32( i, true );
 			i += 4;
 
 			// int numflexdesc;
-			var numflexdesc = dataView.getInt32( i, true );
+			const numflexdesc = dataView.getInt32( i, true );
 			i += 4;
 
 			// int flexdescindex;
-			var flexdescindex = dataView.getInt32( i, true );
+			const flexdescindex = dataView.getInt32( i, true );
 			i += 4;
 
 			// int numflexcontrollers;
-			var numflexcontrollers = dataView.getInt32( i, true );
+			const numflexcontrollers = dataView.getInt32( i, true );
 			i += 4;
 
 			// int flexcontrollerindex;
-			var flexcontrollerindex = dataView.getInt32( i, true );
+			const flexcontrollerindex = dataView.getInt32( i, true );
 			i += 4;
 
 			// int numflexrules;
-			var numflexrules = dataView.getInt32( i, true );
+			const numflexrules = dataView.getInt32( i, true );
 			i += 4;
 
 			// int flexruleindex;
-			var flexruleindex = dataView.getInt32( i, true );
+			const flexruleindex = dataView.getInt32( i, true );
 			i += 4;
 
 			// int numikchains;
-			var numikchains = dataView.getInt32( i, true );
+			const numikchains = dataView.getInt32( i, true );
 			i += 4;
 
 			// int ikchainindex;
-			var ikchainindex = dataView.getInt32( i, true );
+			const ikchainindex = dataView.getInt32( i, true );
 			i += 4;
 
 			// int nummouths;
-			var nummouths = dataView.getInt32( i, true );
+			const nummouths = dataView.getInt32( i, true );
 			i += 4;
 
 			// int mouthindex;
-			var mouthindex = dataView.getInt32( i, true );
+			const mouthindex = dataView.getInt32( i, true );
 			i += 4;
 
 			// int numlocalposeparameters;
-			var numlocalposeparameters = dataView.getInt32( i, true );
+			const numlocalposeparameters = dataView.getInt32( i, true );
 			i += 4;
 
 			// int localposeparamindex;
-			var localposeparamindex = dataView.getInt32( i, true );
+			const localposeparamindex = dataView.getInt32( i, true );
 			i += 4;
 
 			// int surfacepropindex;
-			var surfacepropindex = dataView.getInt32( i, true );
+			const surfacepropindex = dataView.getInt32( i, true );
 			i += 4;
 
 			// int keyvalueindex;
-			var keyvalueindex = dataView.getInt32( i, true );
+			const keyvalueindex = dataView.getInt32( i, true );
 			i += 4;
 
 			// int keyvaluesize;
-			var keyvaluesize = dataView.getInt32( i, true );
+			const keyvaluesize = dataView.getInt32( i, true );
 			i += 4;
 
 			// int numlocalikautoplaylocks;
-			var numlocalikautoplaylocks = dataView.getInt32( i, true );
+			const numlocalikautoplaylocks = dataView.getInt32( i, true );
 			i += 4;
 
 			// int localikautoplaylockindex;
-			var localikautoplaylockindex = dataView.getInt32( i, true );
+			const localikautoplaylockindex = dataView.getInt32( i, true );
 			i += 4;
 
 			// float mass;
-			var mass = dataView.getFloat32( i, true );
+			const mass = dataView.getFloat32( i, true );
 			i += 4;
 
 			// int contents;
-			var contents = dataView.getInt32( i, true );
+			const contents = dataView.getInt32( i, true );
 			i += 4;
 
 			// int numincludemodels;
-			var numincludemodels = dataView.getInt32( i, true );
+			const numincludemodels = dataView.getInt32( i, true );
 			i += 4;
 
 			// int includemodelindex;
-			var includemodelindex = dataView.getInt32( i, true );
+			const includemodelindex = dataView.getInt32( i, true );
 			i += 4;
 
 			// mutable void *virtualModel;
 			i += 4;
 
 			// int szanimblocknameindex;
-			var szanimblocknameindex = dataView.getInt32( i, true );
+			const szanimblocknameindex = dataView.getInt32( i, true );
 			i += 4;
 
 			// int numanimblocks;
-			var numanimblocks = dataView.getInt32( i, true );
+			const numanimblocks = dataView.getInt32( i, true );
 			i += 4;
 
 			// int animblockindex;
-			var animblockindex = dataView.getInt32( i, true );
+			const animblockindex = dataView.getInt32( i, true );
 			i += 4;
 
 			// TODO: load anim blocks
@@ -334,7 +334,7 @@ MDLLoader.prototype = {
 			i += 4;
 
 			// int bonetablebynameindex;
-			var bonetablebynameindex = dataView.getInt32( i, true );
+			const bonetablebynameindex = dataView.getInt32( i, true );
 			i += 4;
 
 			// void *pVertexBase;
@@ -344,15 +344,15 @@ MDLLoader.prototype = {
 			i += 4;
 
 			// byte constdirectionallightdot;
-			var constdirectionallightdot = dataView.getUint8( i, true );
+			const constdirectionallightdot = dataView.getUint8( i, true );
 			i += 1;
 
 			// byte rootLOD;
-			var rootLOD = dataView.getUint8( i, true );
+			const rootLOD = dataView.getUint8( i, true );
 			i += 1;
 
 			// byte numAllowedRootLODs;
-			var numAllowedRootLODs = dataView.getUint8( i, true );
+			const numAllowedRootLODs = dataView.getUint8( i, true );
 			i += 1;
 
 			// byte unused[1];
@@ -362,22 +362,22 @@ MDLLoader.prototype = {
 			i += 4;
 
 			// int numflexcontrollerui;
-			var numflexcontrollerui = dataView.getInt32( i, true );
+			const numflexcontrollerui = dataView.getInt32( i, true );
 			i += 4;
 
 			// int flexcontrolleruiindex;
-			var flexcontrolleruiindex = dataView.getInt32( i, true );
+			const flexcontrolleruiindex = dataView.getInt32( i, true );
 			i += 4;
 
 			// float flVertAnimFixedPointScale;
-			var flVertAnimFixedPointScale = dataView.getFloat32( i, true );
+			const flVertAnimFixedPointScale = dataView.getFloat32( i, true );
 			i += 4;
 
 			// int unused3[1];
 			i += 4;
 
 			// int studiohdr2index;
-			var studiohdr2index = dataView.getInt32( i, true );
+			const studiohdr2index = dataView.getInt32( i, true );
 			i += 4;
 
 			// int unused2[1];
@@ -470,31 +470,31 @@ MDLLoader.prototype = {
 
 			if ( offset === 0 ) return null;
 
-			var dataView = new DataView( buffer );
-			var i = offset;
+			const dataView = new DataView( buffer );
+			let i = offset;
 
 			// int
-			var srcbonetransformCount = dataView.getInt32( i, true );
+			const srcbonetransformCount = dataView.getInt32( i, true );
 			i += 4;
 
 			// int
-			var srcbonetransformIndex = dataView.getInt32( i, true );
+			const srcbonetransformIndex = dataView.getInt32( i, true );
 			i += 4;
 
 			// int
-			var illumpositionattachmentindex = dataView.getInt32( i, true );
+			const illumpositionattachmentindex = dataView.getInt32( i, true );
 			i += 4;
 
 			// float
-			var flMaxEyeDeflection = dataView.getFloat32( i, true );
+			const flMaxEyeDeflection = dataView.getFloat32( i, true );
 			i += 4;
 
 			// int
-			var linearboneIndex = dataView.getInt32( i, true );
+			const linearboneIndex = dataView.getInt32( i, true );
 			i += 4;
 
 			// int[64]
-			var unknown = null;
+			const unknown = null;
 			i += 64 * 4;
 
 			return {
@@ -511,13 +511,13 @@ MDLLoader.prototype = {
 
 		function readData( header, header2, buffer ) {
 
-			var dataView = new DataView( buffer );
-			var textures = [];
+			const dataView = new DataView( buffer );
+			const textures = [];
 			// struct mstudiotexture_t
 			for ( var i = 0; i < header.numtextures; i ++ ) {
 
 				var offset = header.textureindex + i * 16 * 4;
-				var sznameindex = dataView.getInt32( offset, true );
+				const sznameindex = dataView.getInt32( offset, true );
 				// var flags = dataView.getInt32( offset + 4, true );
 				// var used = dataView.getInt32( offset + 8, true );
 
@@ -530,16 +530,16 @@ MDLLoader.prototype = {
 
 			}
 
-			var textureDirectories = [];
+			const textureDirectories = [];
 			for ( var i = 0; i < header.numcdtextures; i ++ ) {
 
 				var offset = header.cdtextureindex + i * 4;
-				var ptr = dataView.getInt32( offset, true );
+				const ptr = dataView.getInt32( offset, true );
 				textureDirectories.push( readString( dataView, ptr ) );
 
 			}
 
-			var includeModels = [];
+			const includeModels = [];
 			// struct mstudiomodelgroup_t
 			for ( var i = 0; i < header.numincludemodels; i ++ ) {
 
@@ -552,11 +552,11 @@ MDLLoader.prototype = {
 			}
 
 			// struct mstudiobodyparts_t
-			var bodyParts = [];
+			const bodyParts = [];
 			for ( var i = 0; i < header.numbodyparts; i ++ ) {
 
 				var offset = header.bodypartindex + i * 16;
-				var bodyPart = {};
+				const bodyPart = {};
 				bodyPart.name = readString( dataView, offset + dataView.getInt32( offset + 0, true ) );
 				bodyPart.nummodels = dataView.getInt32( offset + 4, true );
 				bodyPart.base = dataView.getInt32( offset + 8, true );
@@ -567,7 +567,7 @@ MDLLoader.prototype = {
 				// struct mstudiomodel_t
 				for ( var i2 = 0; i2 < bodyPart.nummodels; i2 ++ ) {
 
-					var offset2 = offset + bodyPart.modelindex + i2 * 148;
+					const offset2 = offset + bodyPart.modelindex + i2 * 148;
 					var model = {};
 					model.name = readString( dataView, offset2 + 0, 64 );
 					model.type = dataView.getInt32( offset2 + 64, true );
@@ -600,10 +600,10 @@ MDLLoader.prototype = {
 					// and causes an out of memory crash
 
 					// struct mstudiomesh_t
-					for ( var i3 = 0; i3 < model.nummeshes; i3 ++ ) {
+					for ( let i3 = 0; i3 < model.nummeshes; i3 ++ ) {
 
-						var offset3 = offset2 + model.meshindex + i3 * 116;
-						var mesh = {};
+						const offset3 = offset2 + model.meshindex + i3 * 116;
+						const mesh = {};
 						mesh.material = dataView.getInt32( offset3 + 0, true );
 						mesh.modelindex = dataView.getInt32( offset3 + 4, true );
 
@@ -645,16 +645,16 @@ MDLLoader.prototype = {
 			}
 
 			// mstudiobone_t
-			var bones = [];
+			const bones = [];
 			for ( var i = 0; i < header.numbones; i ++ ) {
 
 				var offset = header.boneindex + i * 216;
-				var bone = {};
+				const bone = {};
 
 				bone.name = readString( dataView, offset + dataView.getInt32( offset + 0, true ) );
 				bone.parent = dataView.getInt32( offset + 4, true );
 
-				var bonecontroller = new Array( 6 );
+				const bonecontroller = new Array( 6 );
 				for ( let i = 0; i < 6; i ++ ) {
 
 					bonecontroller[ i ] = dataView.getInt32( offset + 8 + i * 4, true );
@@ -728,7 +728,7 @@ MDLLoader.prototype = {
 
 			}
 
-			var boneControllers = [];
+			const boneControllers = [];
 			for ( var i = 0; i < header.numbonecontrollers; i ++ ) {
 
 				const boneController = {};
@@ -932,7 +932,7 @@ MDLLoader.prototype = {
 			}
 
 			// mstudioikchain_t
-			var ikchains = [];
+			const ikchains = [];
 			for ( let i = 0; i < header.numikchains; i ++ ) {
 
 				const offset = header.ikchainindex + i * 16;
@@ -962,7 +962,7 @@ MDLLoader.prototype = {
 
 			}
 
-			var skinsTable = [];
+			const skinsTable = [];
 			for ( let i = 0; i < header.numskinfamilies; i ++ ) {
 
 				const offset = header.skinindex + i * header.numskinref * 2;
@@ -977,7 +977,7 @@ MDLLoader.prototype = {
 
 			}
 
-			var surfaceProp = readString( dataView, header.surfacepropindex );
+			const surfaceProp = readString( dataView, header.surfacepropindex );
 
 			return {
 				textures,
@@ -995,8 +995,8 @@ MDLLoader.prototype = {
 
 		}
 
-		var header = parseHeader( buffer );
-		var header2 = parseSecondaryHeader( buffer, header.studiohdr2index );
+		const header = parseHeader( buffer );
+		const header2 = parseSecondaryHeader( buffer, header.studiohdr2index );
 		return Object.assign( { header, header2, buffer }, readData( header, header2, buffer ) );
 
 	}

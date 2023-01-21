@@ -28,10 +28,10 @@ VTFLoader.prototype.parse = function ( buffer ) {
 
 	function bgrToRgb( buffer, stride ) {
 
-		for ( var i = 0, l = buffer.length; i < l; i += stride ) {
+		for ( let i = 0, l = buffer.length; i < l; i += stride ) {
 
-			var b = buffer[ i ];
-			var r = buffer[ i + 2 ];
+			const b = buffer[ i ];
+			const r = buffer[ i + 2 ];
 			buffer[ i ] = r;
 			buffer[ i + 2 ] = b;
 
@@ -41,9 +41,9 @@ VTFLoader.prototype.parse = function ( buffer ) {
 
 	function parseHeader( buffer ) {
 
-		var dataView = new DataView( buffer );
-		var i = 0;
-		var signature = '';
+		const dataView = new DataView( buffer );
+		let i = 0;
+		let signature = '';
 		for ( var j = 0; j < 4; j ++ ) {
 
 			signature += String.fromCharCode( dataView.getUint8( i, true ) );
@@ -51,31 +51,31 @@ VTFLoader.prototype.parse = function ( buffer ) {
 
 		}
 
-		var version = [ dataView.getUint32( i, true ), dataView.getUint32( i + 4, true ) ];
+		const version = [ dataView.getUint32( i, true ), dataView.getUint32( i + 4, true ) ];
 		i += 8;
 
-		var headerSize = dataView.getUint32( i, true );
+		const headerSize = dataView.getUint32( i, true );
 		i += 4;
 
-		var width = dataView.getUint16( i, true );
+		const width = dataView.getUint16( i, true );
 		i += 2;
 
-		var height = dataView.getUint16( i, true );
+		const height = dataView.getUint16( i, true );
 		i += 2;
 
-		var flags = dataView.getUint32( i, true );
+		const flags = dataView.getUint32( i, true );
 		i += 4;
 
-		var frames = dataView.getUint16( i, true );
+		const frames = dataView.getUint16( i, true );
 		i += 2;
 
-		var firstFrame = dataView.getUint16( i, true );
+		const firstFrame = dataView.getUint16( i, true );
 		i += 2;
 
 		// padding0
 		i += 4;
 
-		var reflectivity = [];
+		const reflectivity = [];
 		for ( var j = 0; j < 3; j ++ ) {
 
 			reflectivity.push( dataView.getFloat32( i, true ) );
@@ -86,33 +86,33 @@ VTFLoader.prototype.parse = function ( buffer ) {
 		// padding1
 		i += 4;
 
-		var bumpmapScale = dataView.getFloat32( i, true );
+		const bumpmapScale = dataView.getFloat32( i, true );
 		i += 4;
 
-		var highResImageFormat = dataView.getUint32( i, true );
+		const highResImageFormat = dataView.getUint32( i, true );
 		i += 4;
 
-		var mipmapCount = dataView.getUint8( i, true );
+		const mipmapCount = dataView.getUint8( i, true );
 		i += 1;
 
-		var lowResImageFormat = dataView.getUint32( i, true );
+		const lowResImageFormat = dataView.getUint32( i, true );
 		i += 4;
 
-		var lowResImageWidth = dataView.getUint8( i, true );
+		const lowResImageWidth = dataView.getUint8( i, true );
 		i += 1;
 
-		var lowResImageHeight = dataView.getUint8( i, true );
+		const lowResImageHeight = dataView.getUint8( i, true );
 		i += 1;
 
 		// 7.2+
-		var depth = dataView.getUint16( i, true );
+		const depth = dataView.getUint16( i, true );
 		i += 2;
 
 		// 7.3+
 		// padding2
 		i += 3;
 
-		var numResources = dataView.getUint32( i, true );
+		const numResources = dataView.getUint32( i, true );
 		i += 4;
 
 		return {
@@ -139,71 +139,71 @@ VTFLoader.prototype.parse = function ( buffer ) {
 
 	function getMipMap( buffer, offset, format, width, height ) {
 
-		var dxtSz = Math.max( 4, width ) / 4 * Math.max( 4, height ) / 4;
-		var threeFormat = null;
-		var byteArray = null;
+		const dxtSz = Math.max( 4, width ) / 4 * Math.max( 4, height ) / 4;
+		let threeFormat = null;
+		let byteArray = null;
 
 		switch ( format ) {
 
-			case 0: // RGBA8888
-				var dataLength = width * height * 4;
-				byteArray = new Uint8Array( buffer, offset, dataLength );
-				threeFormat = RGBAFormat;
-				break;
-			case 1: // ABGR8888
-				var dataLength = width * height * 4;
-				byteArray = new Uint8Array( buffer, offset, dataLength );
+		case 0: // RGBA8888
+			var dataLength = width * height * 4;
+			byteArray = new Uint8Array( buffer, offset, dataLength );
+			threeFormat = RGBAFormat;
+			break;
+		case 1: // ABGR8888
+			var dataLength = width * height * 4;
+			byteArray = new Uint8Array( buffer, offset, dataLength );
 
-				for ( var i = 0, l = byteArray.length; i < l; i += 4 ) {
+			for ( let i = 0, l = byteArray.length; i < l; i += 4 ) {
 
-					var a = byteArray[ i ];
-					var b = byteArray[ i + 1 ];
-					var g = byteArray[ i + 2 ];
-					var r = byteArray[ i + 3 ];
-					byteArray[ i ] = r;
-					byteArray[ i + 1 ] = g;
-					byteArray[ i + 2 ] = b;
-					byteArray[ i + 3 ] = a;
+				const a = byteArray[ i ];
+				const b = byteArray[ i + 1 ];
+				const g = byteArray[ i + 2 ];
+				const r = byteArray[ i + 3 ];
+				byteArray[ i ] = r;
+				byteArray[ i + 1 ] = g;
+				byteArray[ i + 2 ] = b;
+				byteArray[ i + 3 ] = a;
 
-				}
+			}
 
-				threeFormat = RGBAFormat;
-				break;
-			case 2: // RGB888
-				var dataLength = width * height * 3;
-				byteArray = new Uint8Array( buffer, offset, dataLength );
-				threeFormat = RGBFormat;
-				break;
-			case 3: // BGR888
-				var dataLength = width * height * 3;
-				byteArray = new Uint8Array( buffer, offset, dataLength );
-				bgrToRgb( byteArray, 3 );
-				threeFormat = RGBFormat;
-				break;
-			case 12: // BGRA8888
-				var dataLength = width * height * 4;
-				byteArray = new Uint8Array( buffer, offset, dataLength );
-				bgrToRgb( byteArray, 4 );
-				threeFormat = RGBAFormat;
-				break;
-			case 13: // DXT1
-				var dataLength = dxtSz * 8; // 8 blockBytes
-				byteArray = new Uint8Array( buffer, offset, dataLength );
-				threeFormat = RGB_S3TC_DXT1_Format;
-				break;
-			case 14: // DXT3
-				var dataLength = dxtSz * 16; // 16 blockBytes
-				byteArray = new Uint8Array( buffer, offset, dataLength );
-				threeFormat = RGBA_S3TC_DXT3_Format;
-				break;
-			case 15: // DXT5
-				var dataLength = dxtSz * 16; // 16 blockBytes
-				byteArray = new Uint8Array( buffer, offset, dataLength );
-				threeFormat = RGBA_S3TC_DXT5_Format;
-				break;
-			default:
-				console.error( `VTFLoader: Format variant ${ format } is unsupported.` );
-				return null;
+			threeFormat = RGBAFormat;
+			break;
+		case 2: // RGB888
+			var dataLength = width * height * 3;
+			byteArray = new Uint8Array( buffer, offset, dataLength );
+			threeFormat = RGBFormat;
+			break;
+		case 3: // BGR888
+			var dataLength = width * height * 3;
+			byteArray = new Uint8Array( buffer, offset, dataLength );
+			bgrToRgb( byteArray, 3 );
+			threeFormat = RGBFormat;
+			break;
+		case 12: // BGRA8888
+			var dataLength = width * height * 4;
+			byteArray = new Uint8Array( buffer, offset, dataLength );
+			bgrToRgb( byteArray, 4 );
+			threeFormat = RGBAFormat;
+			break;
+		case 13: // DXT1
+			var dataLength = dxtSz * 8; // 8 blockBytes
+			byteArray = new Uint8Array( buffer, offset, dataLength );
+			threeFormat = RGB_S3TC_DXT1_Format;
+			break;
+		case 14: // DXT3
+			var dataLength = dxtSz * 16; // 16 blockBytes
+			byteArray = new Uint8Array( buffer, offset, dataLength );
+			threeFormat = RGBA_S3TC_DXT3_Format;
+			break;
+		case 15: // DXT5
+			var dataLength = dxtSz * 16; // 16 blockBytes
+			byteArray = new Uint8Array( buffer, offset, dataLength );
+			threeFormat = RGBA_S3TC_DXT5_Format;
+			break;
+		default:
+			console.error( `VTFLoader: Format variant ${ format } is unsupported.` );
+			return null;
 
 		}
 
@@ -220,7 +220,7 @@ VTFLoader.prototype.parse = function ( buffer ) {
 
 	function parseMipMaps( buffer, header ) {
 
-		var offset = 80;
+		let offset = 80;
 		if ( header.lowResImageHeight !== 0 ) {
 
 			const lowResMap = getMipMap( buffer, offset, header.lowResImageFormat, header.lowResImageWidth, header.lowResImageHeight );
@@ -246,11 +246,11 @@ VTFLoader.prototype.parse = function ( buffer ) {
 		}
 
 		// smallest to largest
-		var mipmaps = [];
+		let mipmaps = [];
 		for ( var i = 0; i < header.mipmapCount; i ++ ) {
 
 			let { width, height } = dimensions[ i ];
-			var map = getMipMap( buffer, offset, header.highResImageFormat, width, height );
+			const map = getMipMap( buffer, offset, header.highResImageFormat, width, height );
 			mipmaps.push( map );
 			offset += map.data.length;
 
@@ -273,7 +273,7 @@ VTFLoader.prototype.parse = function ( buffer ) {
 
 	}
 
-	var header = parseHeader( buffer );
+	const header = parseHeader( buffer );
 	return parseMipMaps( buffer, header );
 
 };

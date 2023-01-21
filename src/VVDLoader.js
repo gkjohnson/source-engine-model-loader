@@ -31,9 +31,9 @@ VVDLoader.prototype = {
 
 	load: function ( url, onLoad, onProgress, onError ) {
 
-		var scope = this;
+		const scope = this;
 
-		var loader = new FileLoader( this.manager );
+		const loader = new FileLoader( this.manager );
 		loader.setPath( this.path );
 		loader.setResponseType( 'arraybuffer' );
 		loader.load( url, function ( text ) {
@@ -53,28 +53,28 @@ VVDLoader.prototype = {
 		// struct vertexFileHeader_t
 		function parseHeader( buffer ) {
 
-			var dataView = new DataView( buffer );
-			var i = 0;
+			const dataView = new DataView( buffer );
+			let i = 0;
 
 			// int
-			var id = dataView.getInt32( i, true );
+			const id = dataView.getInt32( i, true );
 			i += 4;
 
 			// int
-			var version = dataView.getInt32( i, true );
+			const version = dataView.getInt32( i, true );
 			i += 4;
 
 			// long
-			var checksum = dataView.getInt32( i, true );
+			const checksum = dataView.getInt32( i, true );
 			i += 4;
 
 			// int
-			var numLODs = dataView.getUint32( i, true );
+			const numLODs = dataView.getUint32( i, true );
 			i += 4;
 
 			// int
-			var numLODVertexes = [];
-			for ( var j = 0; j < MAX_NUM_LODS; j ++ ) {
+			const numLODVertexes = [];
+			for ( let j = 0; j < MAX_NUM_LODS; j ++ ) {
 
 				numLODVertexes.push( dataView.getInt32( i, true ) );
 				i += 4;
@@ -82,19 +82,19 @@ VVDLoader.prototype = {
 			}
 
 			// int
-			var numFixups = dataView.getInt32( i, true );
+			const numFixups = dataView.getInt32( i, true );
 			i += 4;
 
 			// int
-			var fixupTableStart = dataView.getInt32( i, true );
+			const fixupTableStart = dataView.getInt32( i, true );
 			i += 4;
 
 			// int
-			var vertexDataStart = dataView.getInt32( i, true );
+			const vertexDataStart = dataView.getInt32( i, true );
 			i += 4;
 
 			// int
-			var tangentDataStart = dataView.getInt32( i, true );
+			const tangentDataStart = dataView.getInt32( i, true );
 			i += 4;
 
 			return {
@@ -114,12 +114,12 @@ VVDLoader.prototype = {
 
 		function parseFixups( buffer, numFixups, fixupTableStart ) {
 
-			var dataView = new DataView( buffer );
-			var offset = fixupTableStart;
-			var res = [];
-			for ( var i = 0; i < numFixups; i ++ ) {
+			const dataView = new DataView( buffer );
+			let offset = fixupTableStart;
+			const res = [];
+			for ( let i = 0; i < numFixups; i ++ ) {
 
-				var fixup = {};
+				const fixup = {};
 				fixup.lod = dataView.getInt32( offset + 0, true );
 				fixup.sourceVertexID = dataView.getInt32( offset + 4, true );
 				fixup.numVertexes = dataView.getInt32( offset + 8, true );
@@ -135,10 +135,10 @@ VVDLoader.prototype = {
 
 		function getBufferAttribute( buffer, len, start ) {
 
-			var interleavedFloat32Array = new Float32Array( buffer, start, len / 4 );
-			var interleavedFloat32Buffer = new InterleavedBuffer( interleavedFloat32Array, 48 / 4 );
-			var interleavedUint8Array = new Uint8Array( buffer, start, len );
-			var interleavedUint8Buffer = new InterleavedBuffer( interleavedUint8Array, 48 );
+			const interleavedFloat32Array = new Float32Array( buffer, start, len / 4 );
+			const interleavedFloat32Buffer = new InterleavedBuffer( interleavedFloat32Array, 48 / 4 );
+			const interleavedUint8Array = new Uint8Array( buffer, start, len );
+			const interleavedUint8Buffer = new InterleavedBuffer( interleavedUint8Array, 48 );
 
 			// VVD file describes three bone weights and indices while THREE.js requires four
 			const totalVerts = len / 48;
@@ -176,12 +176,12 @@ VVDLoader.prototype = {
 
 		}
 
-		var header = parseHeader( buffer );
-		var fixups = parseFixups( buffer, header.numFixups, header.fixupTableStart );
+		const header = parseHeader( buffer );
+		const fixups = parseFixups( buffer, header.numFixups, header.fixupTableStart );
 
 		// apply fixups
-		var attributes;
-		var vertArrayLength = header.tangentDataStart - header.vertexDataStart;
+		let attributes;
+		const vertArrayLength = header.tangentDataStart - header.vertexDataStart;
 		if ( fixups.length !== 0 ) {
 
 			const vertexDataStart = header.vertexDataStart;

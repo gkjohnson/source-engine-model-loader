@@ -29,9 +29,9 @@ VMTLoader.prototype = {
 
 	load: function ( url, onLoad, onProgress, onError ) {
 
-		var scope = this;
+		const scope = this;
 
-		var loader = new FileLoader( this.manager );
+		const loader = new FileLoader( this.manager );
 		loader.setPath( this.path );
 		loader.setResponseType( 'text' );
 		loader.load( url, function ( text ) {
@@ -135,24 +135,24 @@ VMTLoader.prototype = {
 			const field = root[ key ];
 			switch ( key.toLowerCase() ) {
 
-				case '$basetexture':
-					material.map = vtfLoader.load( addExt( `${ path }${ field }`, 'vtf' ) );
-					material.map.wrapS = RepeatWrapping;
-					material.map.wrapT = RepeatWrapping;
-					material.map.encoding = LinearEncoding;
-					break;
-				case '$bumpmap':
-					// TODO: This doesn't seem to quite map correctly to normal map
-					// material.normalMap = vtfLoader.load( addExt( `${ path }${ field }`, '.vtf' ) );
-					// material.normalMap.wrapS = RepeatWrapping;
-					// material.normalMap.wrapT = RepeatWrapping;
-					break;
-				case '$phongexponenttexture':
-					// TODO: This doesn't quite map appropriately to a specular map
-					material.specularMap = vtfLoader.load( addExt( `${ path }${ field }`, 'vtf' ) );
-					material.specularMap.wrapS = RepeatWrapping;
-					material.specularMap.wrapT = RepeatWrapping;
-					break;
+			case '$basetexture':
+				material.map = vtfLoader.load( addExt( `${ path }${ field }`, 'vtf' ) );
+				material.map.wrapS = RepeatWrapping;
+				material.map.wrapT = RepeatWrapping;
+				material.map.encoding = LinearEncoding;
+				break;
+			case '$bumpmap':
+				// TODO: This doesn't seem to quite map correctly to normal map
+				// material.normalMap = vtfLoader.load( addExt( `${ path }${ field }`, '.vtf' ) );
+				// material.normalMap.wrapS = RepeatWrapping;
+				// material.normalMap.wrapT = RepeatWrapping;
+				break;
+			case '$phongexponenttexture':
+				// TODO: This doesn't quite map appropriately to a specular map
+				material.specularMap = vtfLoader.load( addExt( `${ path }${ field }`, 'vtf' ) );
+				material.specularMap.wrapS = RepeatWrapping;
+				material.specularMap.wrapT = RepeatWrapping;
+				break;
 
 			}
 

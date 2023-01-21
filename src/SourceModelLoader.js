@@ -169,7 +169,7 @@ class SourceModelLoader {
 				// TODO: make groups for body parts and models and apply names
 				vtx.bodyParts.forEach( ( vtxBodyPart, i ) => {
 
-					var mdlBodyPart = mdl.bodyParts[ i ];
+					const mdlBodyPart = mdl.bodyParts[ i ];
 					if ( mdlBodyPart.nummodels !== vtxBodyPart.numModels ) {
 
 						console.warn( 'SourceModelLoader: Number of models does not match.' );
@@ -178,7 +178,7 @@ class SourceModelLoader {
 
 					vtxBodyPart.models.forEach( ( vtxModel, i2 ) => {
 
-						var mdlModel = mdlBodyPart.models[ i2 ];
+						const mdlModel = mdlBodyPart.models[ i2 ];
 						vtxModel.lods.forEach( ( vtxLod, i3 ) => {
 
 							// TODO: Skipping everything other than the highest
@@ -195,21 +195,21 @@ class SourceModelLoader {
 							vtxLod.meshes.forEach( ( vtxMesh, i4 ) => {
 
 								// TODO: Enable the ability to pick which skin family we use
-								var mdlMesh = mdlModel.meshes[ i4 ];
-								var skinsTable = mdl.skinsTable;
-								var material = materials[ skinsTable[ 0 ][ mdlMesh.material ] ];
+								const mdlMesh = mdlModel.meshes[ i4 ];
+								const skinsTable = mdl.skinsTable;
+								const material = materials[ skinsTable[ 0 ][ mdlMesh.material ] ];
 
 								vtxMesh.stripGroups.forEach( vtxStripGroup => {
 
-									var obj = new Group();
+									const obj = new Group();
 
 									vtxStripGroup.strips.forEach( vtxStrip => {
 
 										// if ( s.indexOffset !== 0 || s.numIndices === 0 ) return;
 										// console.log( vtxStrip.flags, vtxStrip );
 
-										var indexAttr = toGeometryIndex( vtx.buffer, mdlModel, mdlMesh, vtxStripGroup, vtxStrip );
-										var geometry = new BufferGeometry();
+										const indexAttr = toGeometryIndex( vtx.buffer, mdlModel, mdlMesh, vtxStripGroup, vtxStrip );
+										const geometry = new BufferGeometry();
 										geometry.setIndex( indexAttr );
 										geometry.setAttribute( 'position', vvd.attributes.position );
 										geometry.setAttribute( 'uv', vvd.attributes.uv );
@@ -222,7 +222,7 @@ class SourceModelLoader {
 
 										geometry.addGroup( vtxStrip.numIndices, vtxStrip.indexOffset, 0 );
 
-										var mesh = new SkinnedMesh( geometry, material );
+										const mesh = new SkinnedMesh( geometry, material );
 										mesh.bind( skeleton );
 
 										if ( vtxStrip.flags & 2 ) mesh.drawMode = TriangleStripDrawMode;
