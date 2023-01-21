@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "cd example && parcel serve ./*.html --dist-dir ../dist/ --no-cache --no-hmr",
-    "build": "parcel build --no-content-hash ./example/index.html --public-url ./ --no-cache",
+    "build": "cd example && parcel build ./*.html --dist-dir ../dist/ --no-cache --no-content-hash --no-cache --public-url ./",
     "lint": "eslint ./{src,example}/**.js"
   },
   "repository": {
