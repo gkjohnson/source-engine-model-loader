@@ -1,19 +1,20 @@
 import { Color, UniformsUtils } from 'three';
 
-function cloneShader(shader, uniforms, defines) {
+function cloneShader( shader, uniforms, defines ) {
 
-	const newShader = Object.assign({}, shader);
-	newShader.uniforms = UniformsUtils.merge([
+	const newShader = Object.assign( {}, shader );
+	newShader.uniforms = UniformsUtils.merge( [
 		newShader.uniforms,
 		uniforms
-	]);
-	newShader.defines = Object.assign({}, defines);
+	] );
+	newShader.defines = Object.assign( {}, defines );
 
 	return newShader;
 
 }
 
-export function SkinWeightMixin(shader) {
+export function SkinWeightMixin( shader ) {
+
 	const defineKeyword = 'ENABLE_SKIN_WEIGHTS';
 	const newShader = cloneShader(
 		shader,
@@ -23,7 +24,7 @@ export function SkinWeightMixin(shader) {
 			skinWeightIndex: { value: - 1 }
 		},
 		{
-			[defineKeyword]: 1,
+			[ defineKeyword ]: 1,
 		},
 	);
 
@@ -43,20 +44,21 @@ export function SkinWeightMixin(shader) {
 			#endif
 		}
 		`
-	)
+	);
 
 	newShader.fragmentShader = `
 			uniform vec3 skinWeightColor;
 			varying float skinWeightColorRatio;
 			${newShader.fragmentShader}
 		`.replace(
-			/vec4 diffuseColor = vec4\( diffuse, opacity \);/,
-			v => `${v}
+		/vec4 diffuseColor = vec4\( diffuse, opacity \);/,
+		v => `${v}
 			#ifdef ENABLE_SKIN_WEIGHTS
 				diffuseColor = vec4( skinWeightColor, smoothstep( 0.1, 0.3, skinWeightColorRatio ) * opacity );
 			#endif
 			`,
-		);
+	);
 
 	return newShader;
+
 }

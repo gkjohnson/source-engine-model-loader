@@ -6,7 +6,7 @@
   "scripts": {
     "start": "cd example && parcel serve ./*.html --dist-dir ../dist/ --no-cache --no-hmr",
     "build": "parcel build --no-content-hash ./example/index.html --public-url ./ --no-cache",
-    "lint": "eslint ./src/**.js"
+    "lint": "eslint ./{src,example}/**.js"
   },
   "repository": {
     "type": "git",

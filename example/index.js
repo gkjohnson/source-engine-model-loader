@@ -26,8 +26,8 @@ import { TransformControls } from 'three/examples/jsm/controls/TransformControls
 import { SkinWeightMixin } from './SkinWeightsShaderMixin.js';
 
 // globals
-var stats;
-var params = {
+let stats;
+const params = {
 
 	showSkeleton: false,
 	skin: 0,
@@ -52,17 +52,17 @@ const MODELS = {
 
 };
 
-var camera, scene, renderer, controls;
-var directionalLight, ambientLight, ground;
-var skeletonHelper, model, skeleton, gui;
-var transformControls;
-var mouse = new Vector2();
-var mouseDown = new Vector2();
-var unselectableBones = [];
-var movingControls = false;
+let camera, scene, renderer, controls;
+let directionalLight, ambientLight, ground;
+let skeletonHelper, model, skeleton, gui;
+let transformControls;
+const mouse = new Vector2();
+const mouseDown = new Vector2();
+const unselectableBones = [];
+let movingControls = false;
 
-var SkinWeightShader = SkinWeightMixin( ShaderLib.phong );
-var skinWeightsMaterial = new ShaderMaterial( SkinWeightShader );
+const SkinWeightShader = SkinWeightMixin( ShaderLib.phong );
+const skinWeightsMaterial = new ShaderMaterial( SkinWeightShader );
 skinWeightsMaterial.lights = true;
 skinWeightsMaterial.skinning = true;
 skinWeightsMaterial.transparent = true;
@@ -139,7 +139,7 @@ const raycastBones = ( function () {
 						.map( ( [ key, value ] ) => ( { weight: value, index: key } ) )
 						.sort( ( a, b ) => b.weight - a.weight );
 
-				let boneIndex = sorted[ 0 ].index;
+				const boneIndex = sorted[ 0 ].index;
 				let bone = skeleton.bones[ boneIndex ];
 				const parentIndex = skeleton.bones.findIndex( b => b === bone.parent );
 
@@ -404,7 +404,7 @@ function init() {
 	directionalLight.castShadow = true;
 	directionalLight.shadow.mapSize.setScalar( 1024 );
 
-	var dlShadowCam = directionalLight.shadow.camera;
+	const dlShadowCam = directionalLight.shadow.camera;
 	dlShadowCam.left = dlShadowCam.bottom = - 100;
 	dlShadowCam.top = dlShadowCam.right = 100;
 	scene.add( directionalLight );
@@ -452,15 +452,15 @@ function init() {
 
 		switch ( e.key ) {
 
-			case 'w':
-				transformControls.mode = 'translate';
-				break;
-			case 'e':
-				transformControls.mode = 'rotate';
-				break;
-			case 'r':
-				transformControls.mode = 'scale';
-				break;
+		case 'w':
+			transformControls.mode = 'translate';
+			break;
+		case 'e':
+			transformControls.mode = 'rotate';
+			break;
+		case 'r':
+			transformControls.mode = 'scale';
+			break;
 
 		}
 
@@ -506,8 +506,8 @@ function rebuildGui() {
 
 function onWindowResize() {
 
-	var width = window.innerWidth;
-	var height = window.innerHeight;
+	const width = window.innerWidth;
+	const height = window.innerHeight;
 
 	camera.aspect = width / height;
 	camera.updateProjectionMatrix();
