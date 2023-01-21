@@ -24,7 +24,7 @@ const VTFLoader = function ( manager ) {
 VTFLoader.prototype = Object.create( CompressedTextureLoader.prototype );
 VTFLoader.prototype.constructor = VTFLoader;
 
-VTFLoader.prototype.parse = function ( buffer, loadMipmaps ) {
+VTFLoader.prototype.parse = function ( buffer ) {
 
 	function bgrToRgb( buffer, stride ) {
 

@@ -48,7 +48,7 @@ VVDLoader.prototype = {
 
 		// https://github.com/ValveSoftware/source-sdk-2013/blob/0d8dceea4310fde5706b3ce1c70609d72a38efdf/sp/src/public/studio.h#L398
 		const MAX_NUM_LODS = 8;
-		const MAX_NUM_BONES_PER_VERT = 3;
+		// const MAX_NUM_BONES_PER_VERT = 3;
 
 		// struct vertexFileHeader_t
 		function parseHeader( buffer ) {

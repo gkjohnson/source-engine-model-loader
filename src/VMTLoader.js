@@ -45,7 +45,7 @@ VMTLoader.prototype = {
 	// TODO: Fix this url use and follow the "path" pattern of other loaders
 	parse: function ( string, url ) {
 
-		let type = null;
+		let type = '';
 		let root = null;
 		const objects = [];
 		let currData = '';
@@ -66,7 +66,11 @@ VMTLoader.prototype = {
 				}
 
 				objects.push( newObj );
-				if ( root === null ) root = newObj;
+				if ( root === null ) {
+
+					root = newObj;
+
+				}
 
 				currData = '';
 
