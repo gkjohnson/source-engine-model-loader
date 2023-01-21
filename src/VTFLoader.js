@@ -166,6 +166,7 @@ VTFLoader.prototype.parse = function ( buffer, loadMipmaps ) {
 					byteArray[ i + 3 ] = a;
 
 				}
+
 				threeFormat = RGBAFormat;
 				break;
 			case 2: // RGB888

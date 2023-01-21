@@ -106,6 +106,7 @@ VMTLoader.prototype = {
 					}
 
 				}
+
 				currData = '';
 
 			} else {

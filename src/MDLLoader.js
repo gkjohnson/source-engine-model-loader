@@ -7,7 +7,6 @@ import {
 	Matrix4
 } from 'three';
 
-
 // MDL: https://developer.valvesoftware.com/wiki/MDL
 // https://github.com/ValveSoftware/source-sdk-2013/blob/master/sp/src/public/studio.h
 
@@ -570,7 +569,7 @@ MDLLoader.prototype = {
 
 					var offset2 = offset + bodyPart.modelindex + i2 * 148;
 					var model = {};
-					model.name = readString( dataView, offset2 + 0, 64);
+					model.name = readString( dataView, offset2 + 0, 64 );
 					model.type = dataView.getInt32( offset2 + 64, true );
 					model.boundingradius = dataView.getFloat32( offset2 + 64 + 4, true );
 
@@ -661,6 +660,7 @@ MDLLoader.prototype = {
 					bonecontroller[ i ] = dataView.getInt32( offset + 8 + i * 4, true );
 
 				}
+
 				bone.bonecontroller = bonecontroller;
 
 				// 6 * 4 = 24
@@ -699,6 +699,7 @@ MDLLoader.prototype = {
 					posToBone.elements[ i ] = dataView.getFloat32( offset + 96 + i * 4, true );
 
 				}
+
 				bone.posToBone = posToBone;
 				// console.log( posToBone.elements )
 
@@ -728,7 +729,7 @@ MDLLoader.prototype = {
 			}
 
 			var boneControllers = [];
-			for (var i = 0; i < header.numbonecontrollers; i ++) {
+			for ( var i = 0; i < header.numbonecontrollers; i ++ ) {
 
 				const boneController = {};
 				const offset = header.bonecontrollerindex + i * 56;
@@ -750,7 +751,7 @@ MDLLoader.prototype = {
 			// struct mstudioanimdesc_t
 			for ( var i = 0; i < header.numlocalanim; i ++ ) {
 
-				const animDesc = {}
+				const animDesc = {};
 				const offset = header.localanimindex + i * 100;
 
 				animDesc.baseptr = dataView.getInt32( offset, true );
@@ -956,6 +957,7 @@ MDLLoader.prototype = {
 					ikchain.links.push( link );
 
 				}
+
 				ikchains.push( ikchain );
 
 			}
@@ -970,6 +972,7 @@ MDLLoader.prototype = {
 					ref.push( dataView.getUint16( offset + j * 2, true ) );
 
 				}
+
 				skinsTable.push( ref );
 
 			}

@@ -16,7 +16,7 @@ import { VVDLoader } from './VVDLoader.js';
 
 class SourceModelLoader {
 
-	constructor ( manager ) {
+	constructor( manager ) {
 
 		this.manager = ( manager !== undefined ) ? manager : DefaultLoadingManager;
 
@@ -140,8 +140,8 @@ class SourceModelLoader {
 				const bones = mdl.bones.map( b => {
 
 					const bone = new Bone();
-					bone.position.set(b.pos.x, b.pos.y, b.pos.z);
-					bone.quaternion.set(b.quaternion.x, b.quaternion.y, b.quaternion.z, b.quaternion.w);
+					bone.position.set( b.pos.x, b.pos.y, b.pos.z );
+					bone.quaternion.set( b.quaternion.x, b.quaternion.y, b.quaternion.z, b.quaternion.w );
 					return bone;
 
 				} );
@@ -149,7 +149,7 @@ class SourceModelLoader {
 				bones.forEach( ( b, i ) => {
 
 					const parent = mdl.bones[ i ].parent;
-					if ( parent === -1 ) {
+					if ( parent === - 1 ) {
 
 						group.add( b );
 
@@ -232,7 +232,7 @@ class SourceModelLoader {
 
 									} );
 
-									if (obj.children.length === 1) {
+									if ( obj.children.length === 1 ) {
 
 										group.add( obj.children[ 0 ] );
 
