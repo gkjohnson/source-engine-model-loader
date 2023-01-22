@@ -98,11 +98,16 @@ const raycastBones = ( function () {
 
 				const skinWeightAttr = geometry.getAttribute( 'skinWeight' );
 				const skinIndexAttr = geometry.getAttribute( 'skinIndex' );
+				const positionAttr = geometry.getAttribute( 'position' );
 				const weightTotals = {};
 
 				const aIndex = face.a;
 				const bIndex = face.b;
 				const cIndex = face.c;
+
+				triangle.a.fromBufferAttribute( positionAttr, aIndex );
+				triangle.b.fromBufferAttribute( positionAttr, bIndex );
+				triangle.c.fromBufferAttribute( positionAttr, cIndex );
 
 				object.boneTransform( aIndex, triangle.a );
 				object.boneTransform( bIndex, triangle.b );
