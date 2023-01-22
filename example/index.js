@@ -24,9 +24,9 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { SourceModelLoader } from '../src/SourceModelLoader.js';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 import { SkinWeightMixin } from './SkinWeightsShaderMixin.js';
+import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 
 // globals
-let stats;
 const params = {
 
 	showSkeleton: false,
@@ -426,10 +426,6 @@ function init() {
 
 	loadModel( MODELS[ 'Pyro' ] );
 
-	// stats
-	stats = new Stats();
-	document.body.appendChild( stats.dom );
-
 	// camera controls
 	controls = new OrbitControls( camera, renderer.domElement );
 	controls.addEventListener( 'start', () => movingControls = true );
@@ -484,7 +480,7 @@ function rebuildGui() {
 	params.skin = 0;
 
 	// dat gui
-	gui = new dat.GUI();
+	gui = new GUI();
 	gui.width = 400;
 
 	gui.add( params, 'model', MODELS ).onChange( loadModel );
@@ -558,8 +554,6 @@ function onMouseUp( e ) {
 function animate() {
 
 	requestAnimationFrame( animate );
-
-	stats.update();
 	render();
 
 }
