@@ -37,10 +37,10 @@ export function SkinWeightMixin( shader ) {
 		v => `${v}
 		{
 			#ifdef ENABLE_SKIN_WEIGHTS
-				skinWeightColorRatio += skinWeight.x * float(skinIndex.x == skinWeightIndex);
-				skinWeightColorRatio += skinWeight.y * float(skinIndex.y == skinWeightIndex);
-				skinWeightColorRatio += skinWeight.z * float(skinIndex.z == skinWeightIndex);
-				skinWeightColorRatio += skinWeight.w * float(skinIndex.w == skinWeightIndex);
+				skinWeightColorRatio += skinWeight.x * float( skinIndex.x == skinWeightIndex );
+				skinWeightColorRatio += skinWeight.y * float( skinIndex.y == skinWeightIndex );
+				skinWeightColorRatio += skinWeight.z * float( skinIndex.z == skinWeightIndex );
+				skinWeightColorRatio += skinWeight.w * float( skinIndex.w == skinWeightIndex );
 			#endif
 		}
 		`

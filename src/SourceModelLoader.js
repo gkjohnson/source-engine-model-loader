@@ -13,6 +13,7 @@ import { MDLLoader } from './MDLLoader.js';
 import { VMTLoader } from './VMTLoader.js';
 import { VTXLoader } from './VTXLoader.js';
 import { VVDLoader } from './VVDLoader.js';
+import { toTriangleDrawMode } from './utils.js';
 
 class SourceModelLoader {
 
@@ -225,7 +226,11 @@ class SourceModelLoader {
 										const mesh = new SkinnedMesh( geometry, material );
 										mesh.bind( skeleton );
 
-										if ( vtxStrip.flags & 2 ) mesh.drawMode = TriangleStripDrawMode;
+										if ( vtxStrip.flags & 2 ) {
+
+											mesh.geometry = toTriangleDrawMode( mesh.geometry, TriangleStripDrawMode );
+
+										}
 
 										obj.add( mesh );
 										mesh.userData.materialIndex = mdlMesh.material;
