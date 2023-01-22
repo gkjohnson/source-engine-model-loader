@@ -165,21 +165,9 @@ const raycastBones = ( function () {
 
 				}
 
-				skinWeightsMaterial.uniforms.skinWeightIndex.value = boneIndex;
-
 				return bone;
 
 			} else {
-
-				if ( transformControls.object ) {
-
-					skinWeightsMaterial.uniforms.skinWeightIndex.value = skeleton.bones.indexOf( transformControls.object );
-
-				} else {
-
-					skinWeightsMaterial.uniforms.skinWeightIndex.value = - 1;
-
-				}
 
 				return null;
 
@@ -245,7 +233,6 @@ function loadModel( path ) {
 	loadingId ++;
 	const myLoadingId = loadingId;
 
-	console.log( new URL( path, 'https://raw.githubusercontent.com/gkjohnson/source-engine-model-loader-models/master/' ).toString() );
 	new SourceModelLoader()
 		.load(
 			new URL( path, 'https://raw.githubusercontent.com/gkjohnson/source-engine-model-loader-models/master/' ).toString(),
@@ -430,6 +417,11 @@ function init() {
 	loadModel( MODELS[ 'Pyro' ] );
 
 	// camera controls
+
+	renderer.domElement.addEventListener( 'pointermove', onMouseMove, false );
+	renderer.domElement.addEventListener( 'pointerdown', onMouseDown, false );
+	renderer.domElement.addEventListener( 'pointerup', onMouseUp, false );
+
 	controls = new OrbitControls( camera, renderer.domElement );
 	controls.addEventListener( 'start', () => movingControls = true );
 	controls.addEventListener( 'end', () => movingControls = false );
@@ -449,9 +441,6 @@ function init() {
 	scene.add( transformControls );
 
 	window.addEventListener( 'resize', onWindowResize, false );
-	renderer.domElement.addEventListener( 'pointermove', onMouseMove, false );
-	renderer.domElement.addEventListener( 'pointerdown', onMouseDown, false );
-	renderer.domElement.addEventListener( 'pointerup', onMouseUp, false );
 	window.addEventListener( 'keydown', e => {
 
 		switch ( e.key ) {
@@ -520,21 +509,23 @@ function onWindowResize() {
 
 }
 
-function onMouseMove( event ) {
+function onMouseMove( e ) {
 
-	mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
-	mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
+	mouse.x = ( e.clientX / renderer.domElement.clientWidth ) * 2 - 1;
+	mouse.y = - ( e.clientY / renderer.domElement.clientHeight ) * 2 + 1;
 
 }
 
-function onMouseDown() {
+function onMouseDown( e ) {
 
+	onMouseMove( e );
 	mouseDown.copy( mouse );
 
 }
 
 function onMouseUp( e ) {
 
+	onMouseMove( e );
 	if ( mouseDown.distanceTo( mouse ) < 0.001 ) {
 
 		const hitBone = raycastBones( mouse, e.which !== 1 );
@@ -583,14 +574,30 @@ function render() {
 
 		} );
 
+		if ( transformControls.object ) {
+
+			skinWeightsMaterial.uniforms.skinWeightIndex.value = skeleton.bones.indexOf( transformControls.object );
+
+		} else {
+
+			skinWeightsMaterial.uniforms.skinWeightIndex.value = - 1;
+
+		}
+
+
 	}
 
 	controls.update();
 	renderer.render( scene, camera );
 
-	if ( ! movingControls && raycastBones ) {
+	if ( ! movingControls ) {
 
-		raycastBones( mouse );
+		const bone = raycastBones( mouse );
+		if ( bone ) {
+
+			skinWeightsMaterial.uniforms.skinWeightIndex.value = skeleton.bones.indexOf( bone );
+
+		}
 
 	}
 
