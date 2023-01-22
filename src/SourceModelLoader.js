@@ -13,7 +13,7 @@ import { MDLLoader } from './MDLLoader.js';
 import { VMTLoader } from './VMTLoader.js';
 import { VTXLoader } from './VTXLoader.js';
 import { VVDLoader } from './VVDLoader.js';
-import { toTriangleDrawMode } from './utils.js';
+import { toTrianglesDrawMode } from './utils.js';
 
 class SourceModelLoader {
 
@@ -228,7 +228,7 @@ class SourceModelLoader {
 
 										if ( vtxStrip.flags & 2 ) {
 
-											mesh.geometry = toTriangleDrawMode( mesh.geometry, TriangleStripDrawMode );
+											mesh.geometry = toTrianglesDrawMode( mesh.geometry, TriangleStripDrawMode );
 
 										}
 
