@@ -27,6 +27,6 @@
     "eslint-config-mdcs": "^5.0.0",
     "parcel": "^2.0.0",
     "static-server": "^2.2.1",
-    "three": "^0.119.0"
+    "three": "^0.148.0"
   }
 }
