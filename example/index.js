@@ -63,6 +63,9 @@ let movingControls = false;
 
 const SkinWeightShader = SkinWeightMixin( ShaderLib.phong );
 const skinWeightsMaterial = new ShaderMaterial( SkinWeightShader );
+skinWeightsMaterial.polygonOffset = true;
+skinWeightsMaterial.polygonOffsetFactor = - 1;
+skinWeightsMaterial.polygonOffsetUnits = - 1;
 skinWeightsMaterial.lights = true;
 skinWeightsMaterial.skinning = true;
 skinWeightsMaterial.transparent = true;

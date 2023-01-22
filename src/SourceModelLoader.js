@@ -13,7 +13,7 @@ import { MDLLoader } from './MDLLoader.js';
 import { VMTLoader } from './VMTLoader.js';
 import { VTXLoader } from './VTXLoader.js';
 import { VVDLoader } from './VVDLoader.js';
-import { toTrianglesDrawMode } from './utils.js';
+import { toTrianglesDrawMode } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
 class SourceModelLoader {
 
