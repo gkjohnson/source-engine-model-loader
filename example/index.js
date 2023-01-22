@@ -446,9 +446,9 @@ function init() {
 	scene.add( transformControls );
 
 	window.addEventListener( 'resize', onWindowResize, false );
-	renderer.domElement.addEventListener( 'mousemove', onMouseMove, false );
-	renderer.domElement.addEventListener( 'mousedown', onMouseDown, false );
-	renderer.domElement.addEventListener( 'mouseup', onMouseUp, false );
+	renderer.domElement.addEventListener( 'pointermove', onMouseMove, false );
+	renderer.domElement.addEventListener( 'pointerdown', onMouseDown, false );
+	renderer.domElement.addEventListener( 'pointerup', onMouseUp, false );
 	window.addEventListener( 'keydown', e => {
 
 		switch ( e.key ) {
